@@ -1,20 +1,24 @@
-import { createBrowserRouter, Outlet } from 'react-router';
+import { createBrowserRouter } from 'react-router';
+import Layout from './layout';
+import Home from './home';
+import Terms from './terms';
+import Privacy from './privacy';
 
 export const router = createBrowserRouter([
     {
-        element: <Outlet />,
+        element: <Layout />,
         children: [
             {
                 path: '/',
-                element: <div>home</div>,
+                element: <Home />,
             },
             {
                 path: '/terms',
-                element: <div>Terms</div>,
+                element: <Terms />,
             },
             {
                 path: '/privacy',
-                element: <div>Privacy</div>,
+                element: <Privacy />,
             },
         ],
     },
