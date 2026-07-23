@@ -18,11 +18,11 @@ const Home = () => (
 
             <ul>
                 <li>
-                    <strong>Reminders</strong> — simple text messages you define, such as
+                    <strong>Reminders</strong>: simple text messages you define, such as
                     "Remember to clean the kitchen."
                 </li>
                 <li>
-                    <strong>Stock alerts</strong> — alerts when a stock moves outside a price
+                    <strong>Stock alerts</strong>: alerts when a stock moves outside a price
                     range you set, such as notifying you "AAPL is currently at $440" when
                     Apple trades outside $300–$400.
                 </li>

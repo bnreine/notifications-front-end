@@ -9,6 +9,7 @@ module.exports = {
     output: {
         filename: "bundle.js",
         path: path.resolve(__dirname, "dist"),
+        publicPath: "/",
         clean: true,
     },
 
@@ -26,12 +27,19 @@ module.exports = {
                         ]
                     }
                 }
+            },
+            {
+                test: /favicon\.svg$/,
+                type: "asset/resource",
+                generator: {
+                    filename: "favicon.svg",
+                },
             }
         ]
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './src/index.html'
+            template: './src/index.html',
         })
     ],
     resolve: {
