@@ -65,7 +65,7 @@ const Home = () => (
             </p>
 
             <p>
-                support@notifications.benjaminreincke.click
+                support@notifications.benjaminreinecke.click
             </p>
         </div>
     </>

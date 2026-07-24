@@ -68,7 +68,7 @@ const Privacy = () => (
         </p>
 
         <p>
-            Email: support@notifications.benjaminreincke.click
+            Email: support@notifications.benjaminreinecke.click
         </p>
     </>
 );
