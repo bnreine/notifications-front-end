@@ -6,17 +6,13 @@ import Privacy from './privacy';
 import AuthLayout from './auth/auth-layout';
 import SignIn from './auth/sign-in';
 import NewPassword from './auth/new-password-required';
+import AppLayout from './app-layout';
+import AuthGuard from './auth-guard';
 
-const PassThrough = () => <Outlet />;
 const Configurations = () => 'configs';
 const NewConfig = () => 'new config';
 const EditConfig = () => 'edit config';
 const ConfigPreferences = () => 'config preferences';
-
-// const NewPassword = () => 'new password';
-
-
-const AuthGuard = () => 'auth guarded';
 
 export const router = createBrowserRouter([
   {
@@ -49,24 +45,30 @@ export const router = createBrowserRouter([
       },
     ],
   },
+
   {
-    element: <AuthGuard />, // guarded for now until i put the auth in properly
+    element: <AuthGuard />,
     children: [
       {
-        path: '/configurations',
-        element: <Configurations />,
-      },
-      {
-        path: '/configurations/new',
-        element: <NewConfig />,
-      },
-      {
-        path: '/configurations/:configurationId',
-        element: <EditConfig />,
-      },
-      {
-        path: '/configurations/:configurationId/preferences',
-        element: <ConfigPreferences />,
+        element: <AppLayout />,
+        children: [
+          {
+            path: '/configurations',
+            element: <Configurations />,
+          },
+          {
+            path: '/configurations/new',
+            element: <NewConfig />,
+          },
+          {
+            path: '/configurations/:configurationId',
+            element: <EditConfig />,
+          },
+          {
+            path: '/configurations/:configurationId/preferences',
+            element: <ConfigPreferences />,
+          },
+        ],
       },
     ],
   },
