@@ -8,8 +8,8 @@ import SignIn from './auth/sign-in';
 import NewPassword from './auth/new-password-required';
 import AppLayout from './app-layout';
 import AuthGuard from './auth-guard';
+import Configurations from './configurations/configurations';
 
-const Configurations = () => 'configs';
 const NewConfig = () => 'new config';
 const EditConfig = () => 'edit config';
 const ConfigPreferences = () => 'config preferences';
