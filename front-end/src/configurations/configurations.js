@@ -13,6 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { DataGrid } from '@mui/x-data-grid';
 import { useAsync } from 'react-async';
 import { parseTemplate } from 'url-template';
+import halson from 'halson';
 import { useSessionContext } from '../session-context.js';
 import { useErrorSnackbar } from '../common/error-snackbar-context.js';
 
@@ -118,8 +119,8 @@ const fetchConfigurations = async ({ accessToken, paginationModel }, {}) => {
     throw new Error(`Failed to load configurations (${response.status})`);
   }
 
-  const data = await response.json();
-  const configurations = data._embedded?.configurations ?? [];
+  const data = halson(await response.json());
+  const configurations = data.getEmbeds('configurations');
 
   return {
     rows: configurations.map(mapConfiguration),

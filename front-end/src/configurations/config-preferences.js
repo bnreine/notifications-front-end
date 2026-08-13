@@ -14,6 +14,7 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAsync } from 'react-async';
 import { parseTemplate } from 'url-template';
+import halson from 'halson';
 import { useSessionContext } from '../session-context.js';
 import { useErrorSnackbar } from '../common/error-snackbar-context.js';
 
@@ -48,12 +49,9 @@ const getPreferences = (data) => {
     return data;
   }
 
-  return (
-    data?._embedded?.preferences ??
-    data?._embedded?.configurationPreferences ??
-    data?.preferences ??
-    []
-  );
+  const resource = halson(data);
+
+  return resource.getEmbeds('configurationPreferences');
 };
 
 const getPreferenceId = (preference) =>
