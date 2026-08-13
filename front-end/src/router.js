@@ -9,8 +9,8 @@ import NewPassword from './auth/new-password-required';
 import AppLayout from './app-layout';
 import AuthGuard from './auth-guard';
 import Configurations from './configurations/configurations';
+import NewConfiguration from './configurations/new-configuration';
 
-const NewConfig = () => 'new config';
 const EditConfig = () => 'edit config';
 const ConfigPreferences = () => 'config preferences';
 
@@ -58,7 +58,7 @@ export const router = createBrowserRouter([
           },
           {
             path: '/configurations/new',
-            element: <NewConfig />,
+            element: <NewConfiguration />,
           },
           {
             path: '/configurations/:configurationId',

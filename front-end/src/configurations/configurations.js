@@ -56,6 +56,21 @@ const columns = [
     ),
   },
   {
+    cellClassName: 'configTypeColumnCells',
+    field: 'enabled',
+    headerName: 'Enabled',
+    flex: 0.5,
+    minWidth: 110,
+    renderCell: (params) => (
+      <Chip
+        label={params.value ? 'Enabled' : 'Disabled'}
+        size="small"
+        color={params.value ? 'success' : 'default'}
+        variant="outlined"
+      />
+    ),
+  },
+  {
     field: 'updatedAt',
     headerName: 'Updated At',
     flex: 1,
@@ -77,13 +92,11 @@ const mapConfiguration = (configuration) => ({
   configId: configuration.Id,
   configType: configuration.config?.type ?? '',
   config: configuration.config ?? {},
+  enabled: Boolean(configuration.enabled),
   updatedAt: configuration.updatedAt,
 });
 
-const fetchConfigurations = async (
-  { accessToken, paginationModel },
-  {  }
-) => {
+const fetchConfigurations = async ({ accessToken, paginationModel }, {}) => {
   if (!accessToken) {
     return { rows: [], hasMore: false };
   }
@@ -136,10 +149,7 @@ const Configurations = () => {
   const rows = data?.rows ?? [];
   const hasNextPage = Boolean(data?.hasMore);
 
-  const paginationMeta = useMemo(
-    () => ({ hasNextPage }),
-    [hasNextPage]
-  );
+  const paginationMeta = useMemo(() => ({ hasNextPage }), [hasNextPage]);
 
   const rowCount = hasNextPage
     ? -1
@@ -218,11 +228,10 @@ const Configurations = () => {
             '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within': {
               outline: 'none',
             },
-              '& .configTypeColumnCells': {
-                display: 'flex',
-                  alignItems: 'center',
-              }
-
+            '& .configTypeColumnCells': {
+              display: 'flex',
+              alignItems: 'center',
+            },
           }}
         />
       </Paper>
