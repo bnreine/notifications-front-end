@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
   Box,
@@ -6,15 +6,19 @@ import {
   Chip,
   Paper,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { DataGrid } from '@mui/x-data-grid';
+import { useAsync } from 'react-async';
+import { parseTemplate } from 'url-template';
 import { useSessionContext } from '../session-context.js';
 import { useErrorSnackbar } from '../common/error-snackbar-context.js';
 
-const CONFIGURATIONS_URL =
-  'https://api.notifications.benjaminreinecke.click/configurations';
+const CONFIGURATIONS_URL_TEMPLATE = parseTemplate(
+  'https://api.notifications.benjaminreinecke.click/configurations{?offset,limit}'
+);
 
 const columns = [
   {
@@ -24,18 +28,31 @@ const columns = [
     minWidth: 280,
   },
   {
+    cellClassName: 'configTypeColumnCells',
     field: 'configType',
     headerName: 'Type',
     flex: 0.6,
     minWidth: 140,
     renderCell: (params) => (
-      <Chip
-        label={params.value}
-        size="small"
-        color="primary"
-        variant="outlined"
-        sx={{ textTransform: 'capitalize' }}
-      />
+      <Tooltip
+        title={
+          <Box
+            component="pre"
+            sx={{ m: 0, fontFamily: 'monospace', fontSize: 12 }}
+          >
+            {JSON.stringify(params.row.config ?? {}, null, 2)}
+          </Box>
+        }
+        placement="right"
+      >
+        <Chip
+          label={params.value}
+          size="small"
+          color="primary"
+          variant="outlined"
+          sx={{ textTransform: 'capitalize' }}
+        />
+      </Tooltip>
     ),
   },
   {
@@ -59,69 +76,65 @@ const mapConfiguration = (configuration) => ({
   id: configuration.Id,
   configId: configuration.Id,
   configType: configuration.config?.type ?? '',
+  config: configuration.config ?? {},
   updatedAt: configuration.updatedAt,
 });
+
+const fetchConfigurations = async (
+  { accessToken, paginationModel },
+  {  }
+) => {
+  if (!accessToken) {
+    return { rows: [], hasMore: false };
+  }
+
+  const url = CONFIGURATIONS_URL_TEMPLATE.expand({
+    offset: paginationModel.page * paginationModel.pageSize,
+    limit: paginationModel.pageSize,
+  });
+
+  const response = await fetch(url, {
+    headers: {
+      Authorization: accessToken,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to load configurations (${response.status})`);
+  }
+
+  const data = await response.json();
+  const configurations = data._embedded?.configurations ?? [];
+
+  return {
+    rows: configurations.map(mapConfiguration),
+    hasMore: Boolean(data.hasMore),
+  };
+};
 
 const Configurations = () => {
   const navigate = useNavigate();
   const { accessToken } = useSessionContext();
   const { showError } = useErrorSnackbar();
-
-  const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [hasNextPage, setHasNextPage] = useState(false);
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 10,
   });
 
-  const fetchConfigurations = useCallback(async () => {
-    if (!accessToken) {
-      return;
-    }
+  const { data, isPending } = useAsync({
+    promiseFn: fetchConfigurations,
+    accessToken,
+    paginationModel,
+    watch: paginationModel,
+    onReject: (error) => {
+      showError(error.message || 'Failed to load configurations');
+    },
+  });
 
-    setLoading(true);
-
-    try {
-      const offset = paginationModel.page * paginationModel.pageSize;
-      const url = new URL(CONFIGURATIONS_URL);
-      url.searchParams.set('limit', String(paginationModel.pageSize));
-      url.searchParams.set('offset', String(offset));
-
-      const response = await fetch(url.toString(), {
-        headers: {
-          Authorization: accessToken,
-          Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to load configurations (${response.status})`);
-      }
-
-      const data = await response.json();
-      const configurations = data._embedded?.configurations ?? [];
-
-      setRows(configurations.map(mapConfiguration));
-      setHasNextPage(Boolean(data.hasMore));
-    } catch (error) {
-      console.error(error);
-      showError(
-        error instanceof Error
-          ? error.message
-          : 'Failed to load configurations'
-      );
-      setRows([]);
-      setHasNextPage(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [accessToken, paginationModel, showError]);
-
-  useEffect(() => {
-    fetchConfigurations();
-  }, [fetchConfigurations]);
+  const rows = data?.rows ?? [];
+  const hasNextPage = Boolean(data?.hasMore);
 
   const paginationMeta = useMemo(
     () => ({ hasNextPage }),
@@ -183,7 +196,7 @@ const Configurations = () => {
         <DataGrid
           rows={rows}
           columns={columns}
-          loading={loading}
+          loading={isPending}
           paginationMode="server"
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
@@ -205,6 +218,11 @@ const Configurations = () => {
             '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within': {
               outline: 'none',
             },
+              '& .configTypeColumnCells': {
+                display: 'flex',
+                  alignItems: 'center',
+              }
+
           }}
         />
       </Paper>
