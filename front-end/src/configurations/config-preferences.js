@@ -32,48 +32,30 @@ const CHANNELS = [
   { id: 'slack', label: 'Slack' },
 ];
 
-const EMPTY_CHANNEL_STATE = {
-  whatsapp: false,
-  sms: false,
-  slack: false,
-};
-
 const EMPTY_PREFERENCE_IDS = {
   whatsapp: null,
   sms: null,
   slack: null,
 };
 
-const getPreferences = (data) => {
-  if (Array.isArray(data)) {
-    return data;
-  }
+const jsonHeaders = (accessToken) => ({
+  Authorization: accessToken,
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+});
 
-  const resource = halson(data);
-
-  return resource.getEmbeds('configurationPreferences');
-};
-
-const getPreferenceId = (preference) =>
-  preference?.Id ?? preference?.id ?? null;
-
-const mapPreferences = (preferences) => {
-  const checked = { ...EMPTY_CHANNEL_STATE };
+const preferenceIdsFromResponse = (data) => {
   const preferenceIds = { ...EMPTY_PREFERENCE_IDS };
 
-  preferences.forEach((preference) => {
-    const channel = preference?.channel;
-    const preferenceId = getPreferenceId(preference);
+  halson(data)
+    .getEmbeds('configurationPreferences')
+    .forEach((preference) => {
+      if (preference?.channel in preferenceIds && preference.Id) {
+        preferenceIds[preference.channel] = preference.Id;
+      }
+    });
 
-    if (!CHANNELS.some(({ id }) => id === channel) || !preferenceId) {
-      return;
-    }
-
-    checked[channel] = true;
-    preferenceIds[channel] = preferenceId;
-  });
-
-  return { checked, preferenceIds };
+  return preferenceIds;
 };
 
 const fetchPreferences = async (
@@ -81,33 +63,28 @@ const fetchPreferences = async (
   { signal }
 ) => {
   const url = PREFERENCES_URL_TEMPLATE.expand({ configurationId });
-
   const response = await fetch(url, {
     signal,
-    headers: {
-      Authorization: accessToken,
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+    headers: jsonHeaders(accessToken),
   });
 
   if (!response.ok) {
     throw new Error(`Failed to load preferences (${response.status})`);
   }
 
-  return response.json();
+  return preferenceIdsFromResponse(await response.json());
 };
 
-const createPreference = async ({ accessToken, configurationId, channel }) => {
+const createPreference = async (
+  [channel],
+  { accessToken, configurationId },
+  { signal }
+) => {
   const url = PREFERENCES_URL_TEMPLATE.expand({ configurationId });
-
   const response = await fetch(url, {
     method: 'POST',
-    headers: {
-      Authorization: accessToken,
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+    signal,
+    headers: jsonHeaders(accessToken),
     body: JSON.stringify({ channel }),
   });
 
@@ -117,26 +94,25 @@ const createPreference = async ({ accessToken, configurationId, channel }) => {
     );
   }
 
-  if (response.status === 204) {
-    return null;
-  }
-
-  const text = await response.text();
-  return text ? JSON.parse(text) : null;
+  return response.json();
 };
 
-const deletePreference = async ({
-  accessToken,
-  configurationId,
-  preferenceId,
-}) => {
+const deletePreference = async (
+  [preferenceId],
+  { accessToken, configurationId },
+  { signal }
+) => {
+  if (!preferenceId) {
+    return;
+  }
+
   const url = PREFERENCE_URL_TEMPLATE.expand({
     configurationId,
     preferenceId,
   });
-
   const response = await fetch(url, {
     method: 'DELETE',
+    signal,
     headers: {
       Authorization: accessToken,
       Accept: 'application/json',
@@ -148,86 +124,104 @@ const deletePreference = async ({
   }
 };
 
+const ChannelCheckbox = ({
+  channel,
+  preferenceId,
+  configurationId,
+  accessToken,
+  onPreferenceChange,
+}) => {
+  const { showError } = useErrorSnackbar();
+  const checked = Boolean(preferenceId);
+
+  const { run: runCreate, isPending: isCreating } = useAsync({
+    deferFn: createPreference,
+    accessToken,
+    configurationId,
+    onResolve: (preference) => {
+      onPreferenceChange(preference.channel, preference.Id);
+    },
+    onReject: (error) => {
+      showError(error.message || 'Failed to save preference');
+    },
+  });
+
+  const { run: runDelete, isPending: isDeleting } = useAsync({
+    deferFn: deletePreference,
+    accessToken,
+    configurationId,
+    onResolve: () => {
+      onPreferenceChange(channel.id, null);
+    },
+    onReject: (error) => {
+      showError(error.message || 'Failed to update preference');
+    },
+  });
+
+  const loading = isCreating || isDeleting;
+
+  const handleChange = (event) => {
+    if (event.target.checked) {
+      if (isCreating) {
+        return;
+      }
+
+      runCreate(channel.id);
+      return;
+    }
+
+    if (isDeleting) {
+      return;
+    }
+
+    runDelete(preferenceId);
+  };
+
+  return (
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={checked}
+          onChange={handleChange}
+          disabled={loading}
+        />
+      }
+      label={
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography>{channel.label}</Typography>
+          {loading ? <CircularProgress size={14} /> : null}
+        </Stack>
+      }
+    />
+  );
+};
+
 const ConfigPreferences = () => {
   const navigate = useNavigate();
   const { configurationId } = useParams();
   const { accessToken } = useSessionContext();
   const { showError } = useErrorSnackbar();
-
-  const [checked, setChecked] = useState(EMPTY_CHANNEL_STATE);
-  const [preferenceIds, setPreferenceIds] = useState(EMPTY_PREFERENCE_IDS);
-  const [pending, setPending] = useState(EMPTY_CHANNEL_STATE);
-  const [isFormReady, setIsFormReady] = useState(false);
+  const [preferenceIds, setPreferenceIds] = useState(null);
 
   const { isPending: isLoading } = useAsync({
     promiseFn: fetchPreferences,
     accessToken,
     configurationId,
     watch: configurationId,
-    onResolve: (data) => {
-      const mapped = mapPreferences(getPreferences(data));
-      setChecked(mapped.checked);
-      setPreferenceIds(mapped.preferenceIds);
-      setIsFormReady(true);
-    },
+    onResolve: setPreferenceIds,
     onReject: (error) => {
       showError(error.message || 'Failed to load preferences');
-      setIsFormReady(false);
     },
   });
 
-  const handleChannelChange = async (channel, isChecked) => {
-    if (pending[channel]) {
-      return;
-    }
-
-    setPending((current) => ({ ...current, [channel]: true }));
-
-    try {
-      if (isChecked) {
-        const preference = await createPreference({
-          accessToken,
-          configurationId,
-          channel,
-        });
-        let preferenceId = getPreferenceId(preference);
-
-        if (!preferenceId) {
-          const data = await fetchPreferences(
-            { accessToken, configurationId },
-            {}
-          );
-          const mapped = mapPreferences(getPreferences(data));
-          setChecked(mapped.checked);
-          setPreferenceIds(mapped.preferenceIds);
-          return;
-        }
-
-        setPreferenceIds((current) => ({
-          ...current,
-          [channel]: preferenceId,
-        }));
-        setChecked((current) => ({ ...current, [channel]: true }));
-        return;
-      }
-
-      const preferenceId = preferenceIds[channel];
-      if (preferenceId) {
-        await deletePreference({
-          accessToken,
-          configurationId,
-          preferenceId,
-        });
-      }
-
-      setPreferenceIds((current) => ({ ...current, [channel]: null }));
-      setChecked((current) => ({ ...current, [channel]: false }));
-    } catch (error) {
-      showError(error.message || 'Failed to update preference');
-    } finally {
-      setPending((current) => ({ ...current, [channel]: false }));
-    }
+  const handlePreferenceChange = (channel, preferenceId) => {
+    setPreferenceIds((current) => ({
+      ...current,
+      [channel]: preferenceId,
+    }));
   };
+
+  const goToConfigurations = () => navigate('/configurations');
 
   return (
     <Stack
@@ -242,7 +236,7 @@ const ConfigPreferences = () => {
       <Stack spacing={1}>
         <Button
           startIcon={<ArrowBackIcon />}
-          onClick={() => navigate('/configurations')}
+          onClick={goToConfigurations}
           sx={{ alignSelf: 'flex-start' }}
         >
           Back to configurations
@@ -257,7 +251,7 @@ const ConfigPreferences = () => {
         </Box>
       </Stack>
 
-      {isLoading || !isFormReady ? (
+      {isLoading || !preferenceIds ? (
         <Stack sx={{ alignItems: 'center', py: 8 }}>
           <CircularProgress size={28} />
         </Stack>
@@ -275,34 +269,19 @@ const ConfigPreferences = () => {
           <Stack spacing={2}>
             <FormGroup>
               {CHANNELS.map((channel) => (
-                <FormControlLabel
+                <ChannelCheckbox
                   key={channel.id}
-                  control={
-                    <Checkbox
-                      checked={checked[channel.id]}
-                      onChange={(event) =>
-                        handleChannelChange(channel.id, event.target.checked)
-                      }
-                      disabled={pending[channel.id]}
-                    />
-                  }
-                  label={
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Typography>{channel.label}</Typography>
-                      {pending[channel.id] ? (
-                        <CircularProgress size={14} />
-                      ) : null}
-                    </Stack>
-                  }
+                  channel={channel}
+                  preferenceId={preferenceIds[channel.id]}
+                  configurationId={configurationId}
+                  accessToken={accessToken}
+                  onPreferenceChange={handlePreferenceChange}
                 />
               ))}
             </FormGroup>
 
             <Stack direction="row" spacing={1.5} justifyContent="flex-end">
-              <Button
-                variant="contained"
-                onClick={() => navigate('/configurations')}
-              >
+              <Button variant="contained" onClick={goToConfigurations}>
                 Done
               </Button>
             </Stack>
