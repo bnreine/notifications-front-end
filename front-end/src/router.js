@@ -10,8 +10,8 @@ import AppLayout from './app-layout';
 import AuthGuard from './auth-guard';
 import Configurations from './configurations/configurations';
 import NewConfiguration from './configurations/new-configuration';
+import EditConfiguration from './configurations/edit-configuration';
 
-const EditConfig = () => 'edit config';
 const ConfigPreferences = () => 'config preferences';
 
 export const router = createBrowserRouter([
@@ -62,7 +62,7 @@ export const router = createBrowserRouter([
           },
           {
             path: '/configurations/:configurationId',
-            element: <EditConfig />,
+            element: <EditConfiguration />,
           },
           {
             path: '/configurations/:configurationId/preferences',
