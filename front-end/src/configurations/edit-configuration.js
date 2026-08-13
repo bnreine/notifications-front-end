@@ -16,6 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import TuneIcon from '@mui/icons-material/Tune';
 import { useAsync } from 'react-async';
 import { parseTemplate } from 'url-template';
 import { useSessionContext } from '../session-context.js';
@@ -112,6 +113,9 @@ const EditConfiguration = () => {
     deferFn: updateConfiguration,
     accessToken,
     configurationId,
+    onResolve: () => {
+      navigate(`/configurations/${configurationId}/preferences`);
+    },
     onReject: (error) => {
       showError(error.message || 'Failed to update configuration');
     },
@@ -138,22 +142,40 @@ const EditConfiguration = () => {
         bgcolor: 'grey.50',
       }}
     >
-      <Stack spacing={1}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={2}
+        alignItems={{ xs: 'stretch', sm: 'center' }}
+        justifyContent="space-between"
+      >
+        <Stack spacing={1}>
+          <Button
+            startIcon={<ArrowBackIcon />}
+            onClick={() => navigate('/configurations')}
+            sx={{ alignSelf: 'flex-start' }}
+          >
+            Back to configurations
+          </Button>
+          <Box>
+            <Typography variant="h4" component="h1" fontWeight={600}>
+              Edit configuration
+            </Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
+              Update this reminder or stock quote alert.
+            </Typography>
+          </Box>
+        </Stack>
+
         <Button
-          startIcon={<ArrowBackIcon />}
-          onClick={() => navigate('/configurations')}
-          sx={{ alignSelf: 'flex-start' }}
+          variant="outlined"
+          startIcon={<TuneIcon />}
+          onClick={() =>
+            navigate(`/configurations/${configurationId}/preferences`)
+          }
+          sx={{ alignSelf: { xs: 'stretch', sm: 'center' } }}
         >
-          Back to configurations
+          Preferences
         </Button>
-        <Box>
-          <Typography variant="h4" component="h1" fontWeight={600}>
-            Edit configuration
-          </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
-            Update this reminder or stock quote alert.
-          </Typography>
-        </Box>
       </Stack>
 
       {isLoading || !isFormReady ? (

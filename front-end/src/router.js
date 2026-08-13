@@ -11,8 +11,7 @@ import AuthGuard from './auth-guard';
 import Configurations from './configurations/configurations';
 import NewConfiguration from './configurations/new-configuration';
 import EditConfiguration from './configurations/edit-configuration';
-
-const ConfigPreferences = () => 'config preferences';
+import ConfigPreferences from './configurations/config-preferences';
 
 export const router = createBrowserRouter([
   {

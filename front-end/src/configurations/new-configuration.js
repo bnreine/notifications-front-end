@@ -61,7 +61,9 @@ const NewConfiguration = () => {
     deferFn: createConfiguration,
     accessToken,
     onResolve: (configuration) => {
-      navigate(`/configurations/${configuration.Id}`, { replace: true });
+      navigate(`/configurations/${configuration.Id}/preferences`, {
+        replace: true,
+      });
     },
     onReject: (error) => {
       showError(error.message || 'Failed to create configuration');
