@@ -18,8 +18,10 @@ import { useSessionContext } from '../session-context.js';
 import { useErrorSnackbar } from '../common/error-snackbar-context.js';
 
 const CONFIGURATIONS_URL_TEMPLATE = parseTemplate(
-  'https://api.notifications.benjaminreinecke.click/configurations{?offset,limit}'
+  'https://api.notifications.benjaminreinecke.click/configurations{?offset,limit,sort*}'
 );
+
+const DEFAULT_SORT_MODEL = [{ field: 'updatedAt', sort: 'desc' }];
 
 const columns = [
   {
@@ -27,13 +29,15 @@ const columns = [
     headerName: 'Config ID',
     flex: 1.5,
     minWidth: 280,
+    sortable: false,
   },
   {
     cellClassName: 'configTypeColumnCells',
-    field: 'configType',
+    field: 'type',
     headerName: 'Type',
     flex: 0.6,
     minWidth: 140,
+    sortable: true,
     renderCell: (params) => (
       <Tooltip
         title={
@@ -62,6 +66,7 @@ const columns = [
     headerName: 'Enabled',
     flex: 0.5,
     minWidth: 110,
+    sortable: true,
     renderCell: (params) => (
       <Chip
         label={params.value ? 'Enabled' : 'Disabled'}
@@ -77,6 +82,7 @@ const columns = [
     flex: 1,
     minWidth: 200,
     type: 'dateTime',
+    sortable: true,
     valueGetter: (value) => (value ? new Date(value) : null),
     valueFormatter: (value) =>
       value
@@ -91,13 +97,27 @@ const columns = [
 const mapConfiguration = (configuration) => ({
   id: configuration.Id,
   configId: configuration.Id,
-  configType: configuration.config?.type ?? '',
+  type: configuration.config?.type ?? '',
   config: configuration.config ?? {},
   enabled: Boolean(configuration.enabled),
   updatedAt: configuration.updatedAt,
 });
 
-const fetchConfigurations = async ({ accessToken, paginationModel }, {}) => {
+const toApiSort = (sortModel) => {
+  const sorts = sortModel.length ? sortModel : DEFAULT_SORT_MODEL;
+
+  return sorts.map(({ field, sort }) =>
+    JSON.stringify({
+      field,
+      direction: sort === 'asc' ? 'ASC' : 'DESC',
+    })
+  );
+};
+
+const fetchConfigurations = async (
+  { accessToken, paginationModel, sortModel },
+  {}
+) => {
   if (!accessToken) {
     return { rows: [], hasMore: false };
   }
@@ -105,6 +125,7 @@ const fetchConfigurations = async ({ accessToken, paginationModel }, {}) => {
   const url = CONFIGURATIONS_URL_TEMPLATE.expand({
     offset: paginationModel.page * paginationModel.pageSize,
     limit: paginationModel.pageSize,
+    sort: toApiSort(sortModel),
   });
 
   const response = await fetch(url, {
@@ -136,12 +157,18 @@ const Configurations = () => {
     page: 0,
     pageSize: 10,
   });
+  const [sortModel, setSortModel] = useState(DEFAULT_SORT_MODEL);
+
+  const listQuery = useMemo(
+    () => ({ paginationModel, sortModel }),
+    [paginationModel, sortModel]
+  );
 
   const { data, isPending } = useAsync({
     promiseFn: fetchConfigurations,
     accessToken,
-    paginationModel,
-    watch: paginationModel,
+    ...listQuery,
+    watch: listQuery,
     onReject: (error) => {
       showError(error.message || 'Failed to load configurations');
     },
@@ -211,6 +238,15 @@ const Configurations = () => {
           paginationMode="server"
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
+          sortingMode="server"
+          sortModel={sortModel}
+          onSortModelChange={(newSortModel) => {
+            setSortModel(
+              newSortModel.length ? newSortModel : DEFAULT_SORT_MODEL
+            );
+            setPaginationModel((prev) => ({ ...prev, page: 0 }));
+          }}
+          sortingOrder={['asc', 'desc']}
           pageSizeOptions={[5, 10, 25]}
           rowCount={rowCount}
           paginationMeta={paginationMeta}
