@@ -25,10 +25,10 @@ module.exports = {
           },
         },
       },
-        {
-            test: /\.svg$/i,
-            type: "asset/resource",
-        },
+      {
+        test: /\.svg$/i,
+        type: 'asset/resource',
+      },
       {
         test: /favicon\.svg$/,
         type: 'asset/resource',
