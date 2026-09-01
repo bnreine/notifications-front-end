@@ -1,21 +1,14 @@
-import { Box, Card, CardContent, Stack } from '@mui/material';
+import { Card, CardContent, Stack } from '@mui/material';
 import slackSvg from '../../../assets/icons/slack.svg';
 import FieldValueStack from '../field-value-stack';
 import TitleSubtitleStack from '../title-subtitle-stack';
+import IconComponent from '../icon-component';
 
 const SlackDestinationCard = ({ destination }) => (
   <Card>
     <CardContent sx={{ p: 2, paddingBottom: '16px!important' }}>
       <Stack spacing={2} direction="row">
-        <Box
-          component="img"
-          src={slackSvg}
-          alt="slack"
-          sx={{
-            width: 24,
-            height: 24,
-          }}
-        />
+        <IconComponent iconSvg={slackSvg} alt={'slack'} />
         <Stack spacing={2}>
           <TitleSubtitleStack
             title={'Slack'}

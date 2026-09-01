@@ -1,19 +1,12 @@
-import { Box, Card, CardContent, Stack } from '@mui/material';
+import { Card, CardContent, Stack } from '@mui/material';
+import IconComponent from '../icon-component';
 
 const DefaultDestinationCard = () => (
   <Card>
     <CardContent sx={{ p: 2, paddingBottom: '16px!important' }}>
       <Stack spacing={2} direction="row">
-        <Box
-          component="img"
-          src={null}
-          alt="Default Icon"
-          sx={{
-            width: 24,
-            height: 24,
-          }}
-        />
-        <Stack>Second</Stack>
+        <IconComponent iconSvg={null} alt={'unsupported type'} />
+        <Stack>Unsupported Type</Stack>
       </Stack>
     </CardContent>
   </Card>

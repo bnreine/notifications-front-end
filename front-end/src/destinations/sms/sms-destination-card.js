@@ -2,20 +2,13 @@ import { Box, Card, CardContent, Stack } from '@mui/material';
 import smsSvg from '../../../assets/icons/sms.svg';
 import TitleSubtitleStack from '../title-subtitle-stack';
 import FieldValueStack from '../field-value-stack';
+import IconComponent from '../icon-component';
 
 const SmsDestinationCard = ({ destination }) => (
   <Card>
     <CardContent sx={{ p: 2, paddingBottom: '16px!important' }}>
       <Stack spacing={2} direction="row">
-        <Box
-          component="img"
-          src={smsSvg}
-          alt="sms"
-          sx={{
-            width: 24,
-            height: 24,
-          }}
-        />
+        <IconComponent iconSvg={smsSvg} alt={'sms'} />
         <Stack spacing={2}>
           <TitleSubtitleStack
             title={'SMS'}

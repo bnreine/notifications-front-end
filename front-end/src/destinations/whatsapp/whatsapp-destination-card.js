@@ -1,22 +1,15 @@
-import { Card, CardContent, Stack, Box } from '@mui/material';
+import { Card, CardContent, Stack } from '@mui/material';
 import whatsappSvg from '../../../assets/icons/WhatsApp.svg';
 import TitleSubtitleStack from '../title-subtitle-stack';
 import FieldValueStack from '../field-value-stack';
+import IconComponent from '../icon-component';
 
 const WhatsappDestinationCard = ({ destination }) => {
   return (
     <Card>
       <CardContent sx={{ p: 2, paddingBottom: '16px!important' }}>
         <Stack spacing={2} direction="row">
-          <Box
-            component="img"
-            src={whatsappSvg}
-            alt="slack"
-            sx={{
-              width: 24,
-              height: 24,
-            }}
-          />
+          <IconComponent iconSvg={whatsappSvg} alt={'whatsapp'} />
           <Stack spacing={2}>
             <TitleSubtitleStack
               title={'WhatsApp'}
