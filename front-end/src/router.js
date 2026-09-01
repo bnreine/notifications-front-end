@@ -12,6 +12,7 @@ import Configurations from './configurations/configurations';
 import NewConfiguration from './configurations/new-configuration';
 import EditConfiguration from './configurations/edit-configuration';
 import ConfigPreferences from './configurations/config-preferences';
+import Destinations from './destinations/destinations';
 
 export const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ export const router = createBrowserRouter([
           {
             path: '/configurations',
             element: <Configurations />,
+          },
+          {
+            path: '/destinations',
+            element: <Destinations />,
           },
           {
             path: '/configurations/new',
