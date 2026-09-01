@@ -17,6 +17,8 @@ import { parseTemplate } from 'url-template';
 import halson from 'halson';
 import { useSessionContext } from '../session-context.js';
 import { useErrorSnackbar } from '../common/error-snackbar-context.js';
+import slackSvg from '../../assets/icons/slack.svg';
+import channelTypeRegistry from '../destinations/channel-type-registry';
 
 const PREFERENCES_URL_TEMPLATE = parseTemplate(
   'https://api2.notifications.benjaminreinecke.click/configurations/{configurationId}/preferences'
@@ -96,6 +98,10 @@ const PreferenceCheckbox = ({
     return;
   };
 
+  const TypeIconComponent = (
+    channelTypeRegistry[preference.channelType] || channelTypeRegistry.default
+  ).IconComponent;
+
   return (
     <FormControlLabel
       control={
@@ -107,6 +113,7 @@ const PreferenceCheckbox = ({
       }
       label={
         <Stack direction="row" spacing={1} alignItems="center">
+          <TypeIconComponent />
           <Typography>{preference.name}</Typography>
           {isUpdating ? <CircularProgress size={14} /> : null}
         </Stack>
