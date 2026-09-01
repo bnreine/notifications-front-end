@@ -1,13 +1,7 @@
-import { Card, CardContent } from '@mui/material';
+import SlackDestinationCard from './slack/slack-destination-card';
 
 const slackRegistry = {
-  DestinationCard: () => (
-    <Card>
-      <CardContent sx={{ p: 2, paddingBottom: '16px!important' }}>
-        Slack
-      </CardContent>
-    </Card>
-  ),
+  DestinationCard: SlackDestinationCard,
 };
 
 export default slackRegistry;

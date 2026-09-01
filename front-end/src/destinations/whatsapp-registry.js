@@ -1,10 +1,7 @@
-import {Card, CardContent} from "@mui/material";
+import WhatsAppDestinationCard from './whatsapp/destination-card';
 
 const whatsappRegistry = {
-    DestinationCard: ()=>     <Card>
-        <CardContent sx={{ p: 2, paddingBottom: '16px!important' }}>WhatsApp
-        </CardContent>
-    </Card>
-}
+  DestinationCard: WhatsAppDestinationCard,
+};
 
 export default whatsappRegistry;

@@ -1,11 +1,7 @@
-import {Card, CardContent} from "@mui/material";
+import DefaultDestinationCard from './default/default-destination-card';
 
 const defaultRegistry = {
-  DestinationCard: () =>     <Card>
-      <CardContent sx={{ p: 2, paddingBottom: '16px!important' }}>
-          Unsupported card type
-      </CardContent>
-  </Card>,
+  DestinationCard: DefaultDestinationCard,
 };
 
 export default defaultRegistry;

@@ -40,8 +40,10 @@ const Destinations = () => {
   return (
     <Stack spacing={2} direction="column" sx={{ p: 2 }}>
       {data.map((destination) => {
-        const DestinationCard =
-            (channelTypeRegistry[destination.channelType] || channelTypeRegistry.default).DestinationCard;
+        const DestinationCard = (
+          channelTypeRegistry[destination.channelType] ||
+          channelTypeRegistry.default
+        ).DestinationCard;
         return <DestinationCard key={destination.id} />;
       })}
     </Stack>
