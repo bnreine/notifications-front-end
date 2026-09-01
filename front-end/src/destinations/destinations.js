@@ -44,7 +44,9 @@ const Destinations = () => {
           channelTypeRegistry[destination.channelType] ||
           channelTypeRegistry.default
         ).DestinationCard;
-        return <DestinationCard key={destination.id} />;
+        return (
+          <DestinationCard key={destination.id} destination={destination} />
+        );
       })}
     </Stack>
   );

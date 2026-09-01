@@ -1,4 +1,4 @@
-import DefaultDestinationCard from './default/default-destination-card';
+import DefaultDestinationCard from './default-destination-card';
 
 const defaultRegistry = {
   DestinationCard: DefaultDestinationCard,

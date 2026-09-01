@@ -1,4 +1,4 @@
-import SlackDestinationCard from './slack/slack-destination-card';
+import SlackDestinationCard from './slack-destination-card';
 
 const slackRegistry = {
   DestinationCard: SlackDestinationCard,

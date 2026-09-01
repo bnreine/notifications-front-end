@@ -1,7 +1,7 @@
-import slackRegistry from './slack-registry';
-import defaultRegistry from './default-registry';
-import whatsAppRegistry from './whatsapp-registry';
-import smsRegistry from './sms-registry';
+import slackRegistry from './slack/slack-registry';
+import defaultRegistry from './default/default-registry';
+import whatsAppRegistry from './whatsapp/whatsapp-registry';
+import smsRegistry from './sms/sms-registry';
 
 const channelTypeRegistry = {
   slack: slackRegistry,
