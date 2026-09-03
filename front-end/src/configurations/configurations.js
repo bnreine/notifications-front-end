@@ -1,15 +1,23 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
+import {useMount} from 'react-use'
 import {
   Box,
   Button,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
   Paper,
   Stack,
   Tooltip,
   Typography,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { DataGrid } from '@mui/x-data-grid';
 import { useAsync } from 'react-async';
 import { parseTemplate } from 'url-template';
@@ -25,7 +33,7 @@ const DEFAULT_SORT_MODEL = [{ field: 'updatedAt', sort: 'desc' }];
 
 const columns = [
   {
-    field: 'configId',
+    field: 'Id',
     headerName: 'Config ID',
     flex: 1.5,
     minWidth: 280,
@@ -38,6 +46,7 @@ const columns = [
     flex: 0.6,
     minWidth: 140,
     sortable: true,
+    valueGetter: (value, row) => value ?? row.config?.type ?? '',
     renderCell: (params) => (
       <Tooltip
         title={
@@ -94,14 +103,27 @@ const columns = [
   },
 ];
 
-const mapConfiguration = (configuration) => ({
-  id: configuration.Id,
-  configId: configuration.Id,
-  type: configuration.config?.type ?? '',
-  config: configuration.config ?? {},
-  enabled: Boolean(configuration.enabled),
-  updatedAt: configuration.updatedAt,
-});
+const deleteConfiguration = async (
+  [configuration],
+  { accessToken },
+  { signal }
+) => {
+  const url = halson(configuration).getLink('self').href;
+
+  const response = await fetch(url, {
+    method: 'DELETE',
+    signal,
+    headers: {
+      Authorization: accessToken,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete configuration (${response.status})`);
+  }
+};
 
 const toApiSort = (sortModel) => {
   const sorts = sortModel.length ? sortModel : DEFAULT_SORT_MODEL;
@@ -115,8 +137,9 @@ const toApiSort = (sortModel) => {
 };
 
 const fetchConfigurations = async (
-  { accessToken, paginationModel, sortModel },
-  {}
+  [{ accessToken, paginationModel, sortModel }],
+  {},
+  { signal }
 ) => {
   if (!accessToken) {
     return { rows: [], hasMore: false };
@@ -129,6 +152,7 @@ const fetchConfigurations = async (
   });
 
   const response = await fetch(url, {
+    signal,
     headers: {
       Authorization: accessToken,
       Accept: 'application/json',
@@ -144,7 +168,7 @@ const fetchConfigurations = async (
   const configurations = data.getEmbeds('configurations');
 
   return {
-    rows: configurations.map(mapConfiguration),
+    rows: configurations,
     hasMore: Boolean(data.hasMore),
   };
 };
@@ -158,26 +182,101 @@ const Configurations = () => {
     pageSize: 10,
   });
   const [sortModel, setSortModel] = useState(DEFAULT_SORT_MODEL);
+  const [configToDelete, setConfigToDelete] = useState(null);
 
-  const listQuery = useMemo(
-    () => ({ paginationModel, sortModel }),
-    [paginationModel, sortModel]
-  );
-
-  const { data, isPending } = useAsync({
-    promiseFn: fetchConfigurations,
-    accessToken,
-    ...listQuery,
-    watch: listQuery,
+  const { data, isPending, run } = useAsync({
+    deferFn: fetchConfigurations,
     onReject: (error) => {
       showError(error.message || 'Failed to load configurations');
     },
   });
 
+  useMount(() => {
+    run({ accessToken, paginationModel, sortModel });
+  });
+
   const rows = data?.rows ?? [];
   const hasNextPage = Boolean(data?.hasMore);
 
+  const { run: runDelete, isPending: isDeleting } = useAsync({
+    deferFn: deleteConfiguration,
+    accessToken,
+    onResolve: () => {
+      const isLastRowOnLaterPage =
+        rows.length === 1 && paginationModel.page > 0;
+
+      setConfigToDelete(null);
+
+      const nextPaginationModel = isLastRowOnLaterPage
+        ? { ...paginationModel, page: paginationModel.page - 1 }
+        : paginationModel;
+
+      if (isLastRowOnLaterPage) {
+        setPaginationModel(nextPaginationModel);
+      }
+
+      run({
+        accessToken,
+        paginationModel: nextPaginationModel,
+        sortModel,
+      });
+    },
+    onReject: (error) => {
+      showError(error.message || 'Failed to delete configuration');
+    },
+  });
+
   const paginationMeta = useMemo(() => ({ hasNextPage }), [hasNextPage]);
+
+  const gridColumns = useMemo(
+    () => [
+      ...columns,
+      {
+        field: 'actions',
+        headerName: 'Actions',
+        width: 90,
+        sortable: false,
+        filterable: false,
+        disableColumnMenu: true,
+        align: 'center',
+        headerAlign: 'center',
+        cellClassName: 'configActionsColumnCells',
+        renderCell: (params) => (
+          <IconButton
+            aria-label="Delete configuration"
+            size="small"
+            color="error"
+            onClick={(event) => {
+              event.stopPropagation();
+              setConfigToDelete(params.row);
+            }}
+            onMouseDown={(event) => {
+              event.stopPropagation();
+            }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        ),
+      },
+    ],
+    []
+  );
+
+  const handleCloseDeleteDialog = () => {
+    if (isDeleting) {
+      return;
+    }
+
+    setConfigToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!configToDelete || isDeleting) {
+      return;
+    }
+
+    runDelete(configToDelete);
+  };
 
   const rowCount = hasNextPage
     ? -1
@@ -233,7 +332,8 @@ const Configurations = () => {
       >
         <DataGrid
           rows={rows}
-          columns={columns}
+          columns={gridColumns}
+          getRowId={(row) => row.Id}
           loading={isPending}
           paginationMode="server"
           paginationModel={paginationModel}
@@ -251,9 +351,7 @@ const Configurations = () => {
           rowCount={rowCount}
           paginationMeta={paginationMeta}
           disableRowSelectionOnClick
-          onRowClick={(params) =>
-            navigate(`/configurations/${params.row.configId}`)
-          }
+          onRowClick={(params) => navigate(`/configurations/${params.row.Id}`)}
           sx={{
             border: 'none',
             '& .MuiDataGrid-columnHeaders': {
@@ -265,13 +363,62 @@ const Configurations = () => {
             '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within': {
               outline: 'none',
             },
-            '& .configTypeColumnCells': {
+            '& .configTypeColumnCells, & .configActionsColumnCells': {
               display: 'flex',
               alignItems: 'center',
             },
           }}
         />
       </Paper>
+
+      <Dialog
+        open={Boolean(configToDelete)}
+        onClose={handleCloseDeleteDialog}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>Delete configuration?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This will permanently delete{' '}
+            <Box
+              component="span"
+              title={configToDelete?.Id}
+              sx={{ fontFamily: 'monospace', wordBreak: 'break-all' }}
+            >
+              {configToDelete?.Id}
+            </Box>
+            {configToDelete?.config?.type ? (
+              <>
+                {' '}
+                (
+                <Box component="span" sx={{ textTransform: 'capitalize' }}>
+                  {configToDelete.config.type}
+                </Box>
+                )
+              </>
+            ) : null}
+            .
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button
+            onClick={handleCloseDeleteDialog}
+            disabled={isDeleting}
+            autoFocus
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="contained"
+            disabled={isDeleting}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Stack>
   );
 };

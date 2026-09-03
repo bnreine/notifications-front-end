@@ -3,6 +3,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router';
 import {
   Avatar,
   Box,
+  ButtonBase,
   Drawer,
   List,
   ListItemButton,
@@ -79,6 +80,8 @@ const LeftNav = () => {
         '& .MuiDrawer-paper': {
           width: NAV_WIDTH,
           boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
           bgcolor: 'grey.900',
           color: 'common.white',
           borderRight: 0,
@@ -126,6 +129,7 @@ const LeftNav = () => {
                 sx={{
                   borderRadius: 2,
                   mb: 0.5,
+                  textDecoration: 'none',
                   color: selected ? 'common.white' : 'grey.400',
                   '&.Mui-selected': {
                     bgcolor: 'primary.main',
@@ -145,9 +149,11 @@ const LeftNav = () => {
                 </ListItemIcon>
                 <ListItemText
                   primary={label}
-                  primaryTypographyProps={{
-                    fontWeight: selected ? 600 : 500,
-                    fontSize: 14,
+                  slotProps={{
+                    primary: {
+                      fontWeight: selected ? 600 : 500,
+                      fontSize: 14,
+                    },
                   }}
                 />
               </ListItemButton>
@@ -155,15 +161,16 @@ const LeftNav = () => {
           })}
         </List>
 
-        <Box
+        <ButtonBase
           onClick={(event) => setMenuAnchor(event.currentTarget)}
           sx={{
             display: 'flex',
+            width: '100%',
             alignItems: 'center',
             gap: 1.5,
             p: 1.5,
             borderRadius: 2,
-            cursor: 'pointer',
+            textAlign: 'left',
             bgcolor: (theme) =>
               chroma(theme.palette.common.white).alpha(0.06).hex(),
             '&:hover': {
@@ -194,7 +201,7 @@ const LeftNav = () => {
             )}
           </Stack>
           <ExpandMoreIcon sx={{ color: 'grey.400', fontSize: 20 }} />
-        </Box>
+        </ButtonBase>
 
         <Menu
           anchorEl={menuAnchor}
