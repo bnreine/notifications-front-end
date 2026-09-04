@@ -13,6 +13,7 @@ import NewConfiguration from './configurations/new-configuration';
 import EditConfiguration from './configurations/edit-configuration';
 import ConfigPreferences from './configurations/config-preferences';
 import Destinations from './destinations/destinations';
+import OAuthSlack from './oauth-slack';
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
           {
             path: '/destinations',
             element: <Destinations />,
+          },
+          {
+            path: '/oauth/slack',
+            element: <OAuthSlack />,
           },
           {
             path: '/configurations/new',

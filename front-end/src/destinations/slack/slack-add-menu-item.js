@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { ListItemIcon, ListItemText, MenuItem } from '@mui/material';
 import { useAsync } from 'react-async';
 import IconComponent from '../icon-component';
@@ -13,7 +13,6 @@ const SlackAddMenuItem = forwardRef(
     const { run: runSlackOAuth, isPending: isStartingSlack } = useAsync({
       deferFn: startSlackOAuth,
       accessToken,
-      // onResolve: onCreated, // put this on a message event listener for once slack is done here on this component
       onReject: (error) => {
         showError(error.message || 'Failed to connect Slack');
       },
@@ -35,6 +34,26 @@ const SlackAddMenuItem = forwardRef(
 
       runSlackOAuth(popup);
     };
+
+    useEffect(() => {
+      const handleMessage = (event) => {
+        if (event.origin !== window.location.origin) return;
+
+        if (event.data?.type === 'slack-oauth-success') {
+          onCreated();
+        }
+
+        if (event.data?.type === 'slack-oauth-error') {
+          showError('Could not connect Slack. Please try again.');
+        }
+      };
+
+      window.addEventListener('message', handleMessage);
+
+      return () => {
+        window.removeEventListener('message', handleMessage);
+      };
+    }, []);
 
     return (
       <MenuItem
