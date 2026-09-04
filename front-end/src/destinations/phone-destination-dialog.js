@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router';
 import {
   Button,
   Checkbox,
@@ -9,7 +8,6 @@ import {
   DialogContent,
   DialogTitle,
   FormControlLabel,
-  Link,
   Stack,
   TextField,
   Typography,
@@ -18,46 +16,6 @@ import { useAsync } from 'react-async';
 import { useErrorSnackbar } from '../common/error-snackbar-context';
 
 const PHONE_NUMBER_PATTERN = /^\+[1-9]\d{6,14}$/;
-
-const CHANNEL_COPY = {
-  sms: {
-    title: 'Add SMS destination',
-    consent: (
-      <>
-        I consent to Notifications using this phone number in this app to send
-        SMS messages about my reminders and stock alerts (typically once per day
-        at 8:00 AM EST). Message and data rates may apply. Reply STOP to
-        unsubscribe or HELP for help. See our{' '}
-        <Link component={RouterLink} to="/privacy" target="_blank">
-          Privacy Policy
-        </Link>{' '}
-        and{' '}
-        <Link component={RouterLink} to="/terms" target="_blank">
-          Terms of Service
-        </Link>
-        .
-      </>
-    ),
-  },
-  whatsapp: {
-    title: 'Add WhatsApp destination',
-    consent: (
-      <>
-        I consent to Notifications using this phone number in this app to send
-        WhatsApp messages about my reminders and stock alerts (typically once
-        per day at 8:00 AM EST). Reply STOP to unsubscribe. See our{' '}
-        <Link component={RouterLink} to="/privacy" target="_blank">
-          Privacy Policy
-        </Link>{' '}
-        and{' '}
-        <Link component={RouterLink} to="/terms" target="_blank">
-          Terms of Service
-        </Link>
-        .
-      </>
-    ),
-  },
-};
 
 const createDestination = async ([body], { accessToken }, { signal }) => {
   const response = await fetch(
@@ -84,6 +42,8 @@ const createDestination = async ([body], { accessToken }, { signal }) => {
 const PhoneDestinationDialog = ({
   open,
   channelType,
+  title,
+  consent,
   accessToken,
   onClose,
   onCreated,
@@ -92,7 +52,6 @@ const PhoneDestinationDialog = ({
   const [phoneNumber, setPhoneNumber] = useState('');
   const [consented, setConsented] = useState(false);
   const [phoneError, setPhoneError] = useState('');
-  const copy = CHANNEL_COPY[channelType] || CHANNEL_COPY.sms;
 
   const resetForm = () => {
     setPhoneNumber('');
@@ -143,7 +102,7 @@ const PhoneDestinationDialog = ({
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{copy.title}</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
           <TextField
@@ -177,7 +136,7 @@ const PhoneDestinationDialog = ({
             }
             label={
               <Typography variant="body2" color="text.secondary">
-                {copy.consent}
+                {consent}
               </Typography>
             }
           />

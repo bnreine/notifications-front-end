@@ -1,34 +1,15 @@
 import { useState } from 'react';
-import {
-  Button,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-} from '@mui/material';
+import { Button, Menu } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import channelTypeRegistry from './channel-type-registry';
-import PhoneDestinationDialog from './phone-destination-dialog';
 
-const CHANNEL_OPTIONS = [
-  { channelType: 'slack', label: 'Slack' },
-  { channelType: 'whatsapp', label: 'WhatsApp' },
-  { channelType: 'sms', label: 'SMS' },
-];
+const ADDABLE_CHANNEL_TYPES = ['slack', 'whatsapp', 'sms'];
 
 const AddDestinationButton = ({ accessToken, onCreated }) => {
   const [menuAnchor, setMenuAnchor] = useState(null);
-  const [phoneChannelType, setPhoneChannelType] = useState(null);
 
-  const handleSelectChannel = (channelType) => {
+  const handleCloseMenu = () => {
     setMenuAnchor(null);
-
-    if (channelType === 'slack') {
-      console.log('slack handler');
-      return;
-    }
-
-    setPhoneChannelType(channelType);
   };
 
   return (
@@ -46,33 +27,22 @@ const AddDestinationButton = ({ accessToken, onCreated }) => {
       <Menu
         anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
-        onClose={() => setMenuAnchor(null)}
+        onClose={handleCloseMenu}
+        keepMounted
       >
-        {CHANNEL_OPTIONS.map(({ channelType, label }) => {
-          const IconComponent = channelTypeRegistry[channelType].IconComponent;
+        {ADDABLE_CHANNEL_TYPES.map((channelType) => {
+          const AddMenuItem = channelTypeRegistry[channelType].AddMenuItem;
 
           return (
-            <MenuItem
+            <AddMenuItem
               key={channelType}
-              onClick={() => handleSelectChannel(channelType)}
-            >
-              <ListItemIcon>
-                <IconComponent />
-              </ListItemIcon>
-              <ListItemText>{label}</ListItemText>
-            </MenuItem>
+              accessToken={accessToken}
+              onCreated={onCreated}
+              onCloseMenu={handleCloseMenu}
+            />
           );
         })}
       </Menu>
-      {phoneChannelType ? (
-        <PhoneDestinationDialog
-          open
-          channelType={phoneChannelType}
-          accessToken={accessToken}
-          onClose={() => setPhoneChannelType(null)}
-          onCreated={onCreated}
-        />
-      ) : null}
     </>
   );
 };
