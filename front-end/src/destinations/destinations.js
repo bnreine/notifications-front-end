@@ -4,6 +4,7 @@ import { useAsync } from 'react-async';
 import { useSessionContext } from '../session-context';
 import halson from 'halson';
 import channelTypeRegistry from './channel-type-registry';
+import AddDestinationButton from './add-destination-button';
 
 const DESTINATIONS_URL =
   'https://api2.notifications.benjaminreinecke.click/destinations';
@@ -99,9 +100,16 @@ const Destinations = () => {
     {}
   );
 
-  const { data = [], isPending: isLoading } = useAsync({
+  const {
+    data = [],
+    isPending: isLoading,
+    reload,
+  } = useAsync({
     promiseFn: fetchDestinations,
     accessToken,
+    onResolve: () => {
+      setDestinationInMemoryUpdates({});
+    },
   });
 
   const handleDestinationChange = (destinationId, update) => {
@@ -113,6 +121,9 @@ const Destinations = () => {
 
   return (
     <Stack spacing={2} direction="column" sx={{ p: 2 }}>
+      <Stack direction="row" justifyContent="flex-end">
+        <AddDestinationButton accessToken={accessToken} onCreated={reload} />
+      </Stack>
       {isLoading
         ? Array.from({ length: SKELETON_COUNT }, (_, index) => (
             <DestinationCardSkeleton key={index} />
