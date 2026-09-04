@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import {useMount} from 'react-use'
+import { useMount } from 'react-use';
 import {
   Box,
   Button,

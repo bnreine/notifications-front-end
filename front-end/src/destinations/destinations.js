@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Card, Stack, CardContent, Skeleton } from '@mui/material';
 import { useAsync } from 'react-async';
 import { useSessionContext } from '../session-context';
@@ -94,11 +95,21 @@ const DestinationCardSkeleton = () => (
 
 const Destinations = () => {
   const { accessToken } = useSessionContext();
+  const [destinationInMemoryUpdates, setDestinationInMemoryUpdates] = useState(
+    {}
+  );
 
   const { data = [], isPending: isLoading } = useAsync({
     promiseFn: fetchDestinations,
     accessToken,
   });
+
+  const handleDestinationChange = (destinationId, update) => {
+    setDestinationInMemoryUpdates((current) => ({
+      ...current,
+      [destinationId]: update,
+    }));
+  };
 
   return (
     <Stack spacing={2} direction="column" sx={{ p: 2 }}>
@@ -106,15 +117,26 @@ const Destinations = () => {
         ? Array.from({ length: SKELETON_COUNT }, (_, index) => (
             <DestinationCardSkeleton key={index} />
           ))
-        : data.map((destination) => {
-            const DestinationCard = (
-              channelTypeRegistry[destination.channelType] ||
-              channelTypeRegistry.default
-            ).DestinationCard;
-            return (
-              <DestinationCard key={destination.id} destination={destination} />
-            );
-          })}
+        : data
+            .map((destination) => {
+              const update = destinationInMemoryUpdates[destination.id];
+              return update ? { ...destination, ...update } : destination;
+            })
+            .filter((destination) => !destination.deleted)
+            .map((destination) => {
+              const DestinationCard = (
+                channelTypeRegistry[destination.channelType] ||
+                channelTypeRegistry.default
+              ).DestinationCard;
+              return (
+                <DestinationCard
+                  key={destination.id}
+                  destination={destination}
+                  accessToken={accessToken}
+                  onDestinationChange={handleDestinationChange}
+                />
+              );
+            })}
     </Stack>
   );
 };
