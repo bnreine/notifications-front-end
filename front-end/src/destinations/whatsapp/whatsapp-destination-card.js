@@ -33,7 +33,7 @@ const WhatsappDestinationCard = ({
                 />
                 <FieldValueStack
                   field={'Consent Status'}
-                  value={destination.status}
+                  value={destination.consentStatus}
                 />
               </Stack>
             </Stack>

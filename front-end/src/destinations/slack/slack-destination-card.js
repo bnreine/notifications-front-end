@@ -35,7 +35,10 @@ const SlackDestinationCard = ({
                 value={destination.metadata.channelName}
               />
 
-              <FieldValueStack field={'Status'} value={'active'} />
+              <FieldValueStack
+                field={'Auth Status'}
+                value={destination.authStatus}
+              />
             </Stack>
           </Stack>
         </Stack>
