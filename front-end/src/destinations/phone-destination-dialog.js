@@ -94,9 +94,9 @@ const PhoneDestinationDialog = ({
     }
 
     run({
-      metadata: { phoneNumber },
+      phoneNumber,
       channelType,
-      consentStatus: consented ? 'active' : 'inactive',
+      userConsented: consented,
     });
   };
 
