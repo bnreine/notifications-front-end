@@ -9,6 +9,7 @@ const PhoneDestinationAddMenuItem = forwardRef(
       label,
       IconComponent,
       title,
+      verifyPhoneTitle,
       consent,
       accessToken,
       onCreated,
@@ -37,9 +38,9 @@ const PhoneDestinationAddMenuItem = forwardRef(
         <PhoneDestinationDialog
           open={dialogOpen}
           channelType={channelType}
-          title={title}
+          addPhonePageTitle={title}
+          verifyPhoneTitle={verifyPhoneTitle}
           consent={consent}
-          accessToken={accessToken}
           onClose={() => setDialogOpen(false)}
           onCreated={onCreated}
         />

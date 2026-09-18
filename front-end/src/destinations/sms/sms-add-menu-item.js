@@ -32,6 +32,7 @@ const SmsAddMenuItem = forwardRef((props, ref) => (
     label="SMS"
     IconComponent={SmsIcon}
     title="Add SMS destination"
+    verifyPhoneTitle="Verify SMS number"
     consent={SMS_CONSENT}
   />
 ));

@@ -33,6 +33,7 @@ const WhatsAppAddMenuItem = forwardRef((props, ref) => (
     label="WhatsApp"
     IconComponent={WhatsAppIcon}
     title="Add WhatsApp destination"
+    verifyPhoneTitle="Verify WhatsApp number"
     consent={WHATSAPP_CONSENT}
   />
 ));
