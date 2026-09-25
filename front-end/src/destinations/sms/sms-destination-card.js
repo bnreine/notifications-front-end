@@ -34,6 +34,10 @@ const SmsDestinationCard = ({
                 field={'Consent Status'}
                 value={destination.consentStatus}
               />
+              <FieldValueStack
+                field={'Verify Status'}
+                value={destination.verifyStatus}
+              />
             </Stack>
           </Stack>
         </Stack>

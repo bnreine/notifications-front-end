@@ -61,9 +61,7 @@ export function VerificationCodeInput({ value, onChange }) {
   );
 }
 
-const PHONE_NUMBER_PATTERN = /^\+[1-9]\d{6,14}$/;
-
-const createVerificationChallenge = async (
+const createVerificationAttempt = async (
   [body],
   { accessToken, destinationResource },
   { signal }
@@ -83,7 +81,9 @@ const createVerificationChallenge = async (
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to create challenge (${response.status})`);
+    throw new Error(
+      `Failed to create verification attempt (${response.status})`
+    );
   }
 
   const data = await response.json();
@@ -112,31 +112,21 @@ const PhoneVerificationAndResendCodeDialog = ({
   const [code, setCode] = useState('');
 
   const { run, isPending } = useAsync({
-    deferFn: createVerificationChallenge,
+    deferFn: createVerificationAttempt,
     accessToken,
     destinationResource,
-    onResolve: onClose,
+    onResolve: () => {
+      onClose();
+      onCreated();
+    },
     onReject: (error) => {
       showError(error.message || 'Failed to verify code');
     },
   });
 
   const handleDone = () => {
-    if (isPending) {
-      return;
-    }
-
-    if (!PHONE_NUMBER_PATTERN.test(phoneNumber)) {
-      setPhoneError(
-        'Enter a phone number in valid international format eg. +55555555555(5)'
-      );
-      return;
-    }
-
     run({
-      phoneNumber,
-      channelType,
-      userConsented: consented,
+      code,
     });
   };
 
@@ -165,7 +155,7 @@ const PhoneVerificationAndResendCodeDialog = ({
         <Button
           onClick={handleDone}
           variant="contained"
-          disabled={isPending}
+          disabled={isPending || code.length !== 6}
           startIcon={
             isPending ? (
               <CircularProgress size={16} color="inherit" />
