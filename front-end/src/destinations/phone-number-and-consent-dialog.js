@@ -96,6 +96,11 @@ const PhoneNumberAndConsentDialog = ({
     });
   };
 
+
+  const addButtonText = consented ? 'Add and consent!' : 'Add and do not consent'
+
+    const addLoadingButtonText=consented ? 'Adding with consent...' : 'Adding without consent...'
+
   return (
     <>
       <DialogTitle>{addPhonePageTitle}</DialogTitle>
@@ -152,7 +157,7 @@ const PhoneNumberAndConsentDialog = ({
             ) : undefined
           }
         >
-          {isPending ? 'Adding...' : 'Add'}
+          {isPending ? addLoadingButtonText : addButtonText}
         </Button>
       </DialogActions>
     </>

@@ -1,4 +1,7 @@
 import { cardStyle } from './styles';
+import addConsentImg from "../assets/icons/add-consent-3.png";
+import addDontConsentImg from "../assets/icons/add-dont-consent-2.png";
+import {Box, Stack} from "@mui/material";
 
 const Home = () => (
   <>
@@ -48,7 +51,7 @@ const Home = () => (
           Configure the message, trigger conditions, and delivery channels for
           each one.
         </li>
-        <li>Opt in to the notifications you want to receive.</li>
+        <li>For SMS/WhatsApp delivery channels, opt in to the notifications you want to receive.</li>
         <li>
           Receive alerts on WhatsApp, SMS, or Slack when your conditions are
           met. Notifications are evaluated once per day at 8:00 AM EST.
@@ -66,6 +69,30 @@ const Home = () => (
         channel.
       </p>
     </div>
+
+      <div style={cardStyle}>
+          <h2>Opting In</h2>
+
+          <p>
+              You can opt-in while adding the SMS/WhatsApp destination like so...
+          </p>
+          <Stack spacing={2}>
+              <Box
+                  component="img"
+                  src={addDontConsentImg}
+                  alt={'dont consent'}
+              />
+              <Box
+                  component="img"
+                  src={addConsentImg}
+                  alt={'consent'}
+              />
+          </Stack>
+
+
+
+
+      </div>
 
     <div style={cardStyle}>
       <h2>Contact</h2>
