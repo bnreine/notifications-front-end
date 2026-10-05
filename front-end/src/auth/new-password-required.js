@@ -15,8 +15,8 @@ import {
 } from '@mui/material';
 import { confirmSignIn } from 'aws-amplify/auth';
 import AuthBrand from './auth-brand.js';
-// import AuthErrorAlert from './auth-error-alert.jsx';
-// import { getAuthErrorMessage } from './auth-error-message.js';
+import AuthErrorAlert from './auth-error-alert.js';
+import { getAuthErrorMessage } from './auth-error-message.js';
 import { useSessionContext } from '../session-context.js';
 
 const attributeLabels = {
@@ -116,7 +116,7 @@ const NewPasswordRequired = () => {
         return;
       }
 
-      // setError(getAuthErrorMessage(err));
+      setError(getAuthErrorMessage(err));
     } finally {
       setIsSubmitting(false);
     }
@@ -129,17 +129,19 @@ const NewPasswordRequired = () => {
       onSubmit={handleSubmit}
       sx={{ width: '100%' }}
     >
-      <AuthBrand
-        title="Set a new password"
-        subtitle={`Choose a new password for ${email}`}
-      />
+      <Stack spacing={2} sx={{ p: 2 }}>
+        <AuthBrand
+          title="Set a new password"
+          subtitle={`Choose a new password for ${email}`}
+        />
 
-      {/*<AuthErrorAlert error={error} />*/}
+        <AuthErrorAlert error={error} />
 
-      <Stack spacing={2}>
         {missingAttributes.map((attribute) => (
           <Stack key={attribute} spacing={0.5}>
-            <Typography variant="h6">{getAttributeLabel(attribute)}</Typography>
+            <Typography variant="subtitle">
+              {getAttributeLabel(attribute)}
+            </Typography>
             <TextField
               id={`new-password-attribute-${attribute}`}
               type={attribute === 'email' ? 'email' : 'text'}
@@ -147,13 +149,14 @@ const NewPasswordRequired = () => {
               value={attributeValues[attribute]}
               onChange={handleAttributeChange(attribute)}
               required
+              size={'small'}
               fullWidth
             />
           </Stack>
         ))}
 
         <Stack spacing={0.5}>
-          <Typography variant="h6">New password</Typography>
+          <Typography variant="subtitle">New password</Typography>
           <TextField
             id="new-password"
             type="password"
@@ -163,11 +166,12 @@ const NewPasswordRequired = () => {
             onChange={(event) => setNewPassword(event.target.value)}
             required
             fullWidth
+            size={'small'}
           />
         </Stack>
 
         <Stack spacing={0.5}>
-          <Typography variant="h6">Confirm new password</Typography>
+          <Typography variant="subtitle">Confirm new password</Typography>
           <TextField
             id="confirm-new-password"
             type="password"
@@ -177,37 +181,37 @@ const NewPasswordRequired = () => {
             onChange={(event) => setConfirmPassword(event.target.value)}
             required
             fullWidth
+            size={'small'}
           />
         </Stack>
-      </Stack>
-
-      <Button
-        type="submit"
-        variant="contained"
-        fullWidth
-        disabled={isSubmitting}
-        startIcon={
-          isSubmitting ? (
-            <CircularProgress size={16} color="inherit" />
-          ) : undefined
-        }
-      >
-        {isSubmitting ? 'Updating password...' : 'Set password and continue'}
-      </Button>
-
-      <Typography
-        variant="h6"
-        sx={{ textAlign: 'center', color: 'text.secondary' }}
-      >
-        <Link
-          component={RouterLink}
-          to="/sign-in"
-          state={{ email }}
-          underline="hover"
+        <Button
+          type="submit"
+          variant="contained"
+          fullWidth
+          disabled={isSubmitting}
+          startIcon={
+            isSubmitting ? (
+              <CircularProgress size={16} color="inherit" />
+            ) : undefined
+          }
         >
-          Back to sign in
-        </Link>
-      </Typography>
+          {isSubmitting ? 'Updating password...' : 'Set password and continue'}
+        </Button>
+
+        <Typography
+          variant="subtitle"
+          sx={{ textAlign: 'center', color: 'text.secondary' }}
+        >
+          <Link
+            component={RouterLink}
+            to="/sign-in"
+            state={{ email }}
+            underline="hover"
+          >
+            Back to sign in
+          </Link>
+        </Typography>
+      </Stack>
     </Stack>
   );
 };

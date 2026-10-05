@@ -77,12 +77,9 @@ const SignIn = () => {
       component="form"
       spacing={3}
       onSubmit={handleSubmit}
-      sx={{ width: '100%' }}
+      sx={{ width: '100%', p: 2 }}
     >
-      <AuthBrand
-        title="Sign in"
-        subtitle="Welcome back to Study Outline Generator"
-      />
+      <AuthBrand title="Sign in" subtitle="Welcome back to Notifications" />
 
       <AuthErrorAlert error={error} />
 
@@ -94,7 +91,7 @@ const SignIn = () => {
 
       <Stack spacing={2}>
         <Stack spacing={0.5}>
-          <Typography variant="h6">Email</Typography>
+          <Typography variant="subtitle">Email</Typography>
           <TextField
             id="sign-in-email"
             type="email"
@@ -104,11 +101,12 @@ const SignIn = () => {
             onChange={(event) => setEmail(event.target.value)}
             required
             fullWidth
+            size={'small'}
           />
         </Stack>
 
         <Stack spacing={0.5}>
-          <Typography variant="h6">Password</Typography>
+          <Typography variant="subtitle1">Password</Typography>
           <TextField
             id="sign-in-password"
             type="password"
@@ -117,6 +115,7 @@ const SignIn = () => {
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             required
+            size={'small'}
             fullWidth
           />
         </Stack>

@@ -1,37 +1,25 @@
-import { Box, Stack, SvgIcon, Typography } from '@mui/material';
-import chroma from 'chroma-js';
-// import AiMagicSvg from '../icons/ai-magic.jsx';
+import { Stack, SvgIcon, Typography } from '@mui/material';
+import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications';
 
 const AuthBrand = ({ title, subtitle }) => {
   return (
     <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center' }}>
-      <Box
+      <SvgIcon
         sx={{
-          display: 'flex',
-          p: 1.5,
-          bgcolor: (theme) =>
-            chroma(theme.palette.primary.main).alpha(0.2).hex(),
-          borderRadius: 2,
+          height: 36,
+          width: 36,
+          color: 'primary.main',
         }}
       >
-        {/*<SvgIcon*/}
-        {/*    sx={{*/}
-        {/*        height: 36,*/}
-        {/*        width: 36,*/}
-        {/*        color: (theme) =>*/}
-        {/*            chroma(theme.palette.primary.main).alpha(0.9).hex(),*/}
-        {/*    }}*/}
-        {/*>*/}
-        {/*    {AiMagicSvg}*/}
-        {/*</SvgIcon>*/}
-      </Box>
+        <CircleNotificationsIcon />
+      </SvgIcon>
 
       <Stack spacing={0.5}>
         <Typography variant="h4" sx={{ fontWeight: 600, fontSize: 20 }}>
           {title}
         </Typography>
         {subtitle && (
-          <Typography variant="h6" sx={{ color: 'text.secondary' }}>
+          <Typography variant="subtitle" sx={{ color: 'text.secondary' }}>
             {subtitle}
           </Typography>
         )}
