@@ -34,10 +34,12 @@ const SmsDestinationCard = ({
                 field={'Consent Status'}
                 value={destination.consentStatus}
               />
-                {destination.verifyStatus ? <FieldValueStack
-                field={'Verify Status'}
-                value={destination.verifyStatus}
-              /> : null}
+              {destination.verifyStatus ? (
+                <FieldValueStack
+                  field={'Verify Status'}
+                  value={destination.verifyStatus}
+                />
+              ) : null}
             </Stack>
           </Stack>
         </Stack>

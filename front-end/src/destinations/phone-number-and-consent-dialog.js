@@ -96,10 +96,13 @@ const PhoneNumberAndConsentDialog = ({
     });
   };
 
+  const addButtonText = consented
+    ? 'Add and consent!'
+    : 'Add and do not consent';
 
-  const addButtonText = consented ? 'Add and consent!' : 'Add and do not consent'
-
-    const addLoadingButtonText=consented ? 'Adding with consent...' : 'Adding without consent...'
+  const addLoadingButtonText = consented
+    ? 'Adding with consent...'
+    : 'Adding without consent...';
 
   return (
     <>
