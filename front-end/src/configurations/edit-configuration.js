@@ -4,15 +4,8 @@ import {
   Box,
   Button,
   CircularProgress,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
   Paper,
-  Radio,
-  RadioGroup,
   Stack,
-  Switch,
-  TextField,
   Typography,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -21,15 +14,18 @@ import { useAsync } from 'react-async';
 import { parseTemplate } from 'url-template';
 import { useSessionContext } from '../session-context.js';
 import { useErrorSnackbar } from '../common/error-snackbar-context.js';
+import EditConfigPanel from './edit-config-panel';
+import editConfigHooks from './edit-config-hooks';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const CONFIGURATION_URL_TEMPLATE = parseTemplate(
   'https://api.notifications.benjaminreinecke.click/configurations/{configurationId}'
 );
-
-const CONFIG_TYPES = {
-  reminder: 'reminder',
-  stockQuoteAlert: 'stockQuoteAlert',
-};
 
 const fetchConfiguration = async (
   { accessToken, configurationId },
@@ -83,31 +79,7 @@ const EditConfiguration = () => {
   const { configurationId } = useParams();
   const { accessToken } = useSessionContext();
   const { showError } = useErrorSnackbar();
-
-  const [configType, setConfigType] = useState(CONFIG_TYPES.reminder);
-  const [message, setMessage] = useState('');
-  const [stock, setStock] = useState('');
-  const [enabled, setEnabled] = useState(true);
   const [isFormReady, setIsFormReady] = useState(false);
-
-  const { isPending: isLoading } = useAsync({
-    promiseFn: fetchConfiguration,
-    accessToken,
-    configurationId,
-    watch: configurationId,
-    onResolve: (configuration) => {
-      const type = configuration.config?.type ?? CONFIG_TYPES.reminder;
-      setConfigType(type);
-      setMessage(configuration.config?.message ?? '');
-      setStock(configuration.config?.stock ?? '');
-      setEnabled(Boolean(configuration.enabled));
-      setIsFormReady(true);
-    },
-    onReject: (error) => {
-      showError(error.message || 'Failed to load configuration');
-      setIsFormReady(false);
-    },
-  });
 
   const { run, isPending: isSaving } = useAsync({
     deferFn: updateConfiguration,
@@ -121,16 +93,42 @@ const EditConfiguration = () => {
     },
   });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const editConfigProps = editConfigHooks({ run });
+  const {
+    setConfigType,
+    setMessage,
+    setEnabled,
+    setTargetAtLocal,
+    setTimezone,
+    handleSubmit,
+  } = editConfigProps;
 
-    const config =
-      configType === CONFIG_TYPES.reminder
-        ? { type: CONFIG_TYPES.reminder, message }
-        : { type: CONFIG_TYPES.stockQuoteAlert, stock };
+  const { isPending: isLoading } = useAsync({
+    promiseFn: fetchConfiguration,
+    accessToken,
+    configurationId,
+    watch: configurationId,
+    onResolve: (configuration) => {
+      const type = configuration.config.type;
+      setConfigType(type);
+      setEnabled(Boolean(configuration.enabled));
+      setIsFormReady(true);
 
-    run({ enabled, config });
-  };
+      if (type === 'reminder') {
+        setMessage(configuration.config?.message ?? '');
+      } else {
+        const pickerValue = dayjs
+          .utc(configuration.config.targetAt)
+          .tz(configuration.config.timezone);
+        setTargetAtLocal(pickerValue);
+        setTimezone(configuration.config.timezone);
+      }
+    },
+    onReject: (error) => {
+      showError(error.message || 'Failed to load configuration');
+      setIsFormReady(false);
+    },
+  });
 
   return (
     <Stack
@@ -161,7 +159,7 @@ const EditConfiguration = () => {
               Edit configuration
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
-              Update this reminder or stock quote alert.
+              Update this reminder or countdown.
             </Typography>
           </Box>
         </Stack>
@@ -196,61 +194,7 @@ const EditConfiguration = () => {
           }}
         >
           <Stack spacing={3}>
-            <FormControl>
-              <FormLabel id="config-type-label">Configuration type</FormLabel>
-              <RadioGroup
-                aria-labelledby="config-type-label"
-                value={configType}
-                onChange={(event) => setConfigType(event.target.value)}
-              >
-                <FormControlLabel
-                  value={CONFIG_TYPES.reminder}
-                  control={<Radio />}
-                  label="Reminder"
-                />
-                <FormControlLabel
-                  value={CONFIG_TYPES.stockQuoteAlert}
-                  control={<Radio />}
-                  label="Stock quote alert"
-                />
-              </RadioGroup>
-            </FormControl>
-
-            {configType === CONFIG_TYPES.reminder ? (
-              <TextField
-                label="Message"
-                value={message}
-                onChange={(event) => setMessage(event.target.value)}
-                placeholder="Remember to clean the kitchen"
-                required
-                fullWidth
-                multiline
-                minRows={2}
-              />
-            ) : (
-              <TextField
-                label="Stock"
-                value={stock}
-                onChange={(event) => setStock(event.target.value.toUpperCase())}
-                placeholder="AAPL"
-                required
-                fullWidth
-                slotProps={{
-                  htmlInput: { maxLength: 10 },
-                }}
-              />
-            )}
-
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={enabled}
-                  onChange={(event) => setEnabled(event.target.checked)}
-                />
-              }
-              label={enabled ? 'Enabled' : 'Disabled'}
-            />
-
+            <EditConfigPanel {...editConfigProps} />
             <Stack direction="row" spacing={1.5} justifyContent="flex-end">
               <Button
                 type="button"

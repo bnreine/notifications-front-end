@@ -1,32 +1,21 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import {
   Box,
   Button,
   CircularProgress,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
   Paper,
-  Radio,
-  RadioGroup,
   Stack,
-  Switch,
-  TextField,
   Typography,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useAsync } from 'react-async';
 import { useSessionContext } from '../session-context.js';
 import { useErrorSnackbar } from '../common/error-snackbar-context.js';
+import EditConfigPanel from './edit-config-panel';
+import editConfigHooks from './edit-config-hooks';
 
 const CONFIGURATIONS_URL =
   'https://api.notifications.benjaminreinecke.click/configurations';
-
-const CONFIG_TYPES = {
-  reminder: 'reminder',
-  stockQuoteAlert: 'stockQuoteAlert',
-};
 
 const createConfiguration = async ([body], { accessToken }, { signal }) => {
   const response = await fetch(CONFIGURATIONS_URL, {
@@ -52,11 +41,6 @@ const NewConfiguration = () => {
   const { accessToken } = useSessionContext();
   const { showError } = useErrorSnackbar();
 
-  const [configType, setConfigType] = useState(CONFIG_TYPES.reminder);
-  const [message, setMessage] = useState('');
-  const [stock, setStock] = useState('');
-  const [enabled, setEnabled] = useState(true);
-
   const { run, isPending } = useAsync({
     deferFn: createConfiguration,
     accessToken,
@@ -70,16 +54,8 @@ const NewConfiguration = () => {
     },
   });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    const config =
-      configType === CONFIG_TYPES.reminder
-        ? { type: CONFIG_TYPES.reminder, message: message }
-        : { type: CONFIG_TYPES.stockQuoteAlert, stock: stock };
-
-    run({ enabled, config });
-  };
+  const configPanelProps = editConfigHooks({ run });
+  const { handleSubmit } = configPanelProps;
 
   return (
     <Stack
@@ -104,7 +80,7 @@ const NewConfiguration = () => {
             New configuration
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
-            Create a reminder or stock quote alert.
+            Create a reminder or countdown.
           </Typography>
         </Box>
       </Stack>
@@ -122,60 +98,7 @@ const NewConfiguration = () => {
         }}
       >
         <Stack spacing={3}>
-          <FormControl>
-            <FormLabel id="config-type-label">Configuration type</FormLabel>
-            <RadioGroup
-              aria-labelledby="config-type-label"
-              value={configType}
-              onChange={(event) => setConfigType(event.target.value)}
-            >
-              <FormControlLabel
-                value={CONFIG_TYPES.reminder}
-                control={<Radio />}
-                label="Reminder"
-              />
-              <FormControlLabel
-                value={CONFIG_TYPES.stockQuoteAlert}
-                control={<Radio />}
-                label="Stock quote alert"
-              />
-            </RadioGroup>
-          </FormControl>
-
-          {configType === CONFIG_TYPES.reminder ? (
-            <TextField
-              label="Message"
-              value={message}
-              onChange={(event) => setMessage(event.target.value)}
-              placeholder="Remember to clean the kitchen"
-              required
-              fullWidth
-              multiline
-              minRows={2}
-            />
-          ) : (
-            <TextField
-              label="Stock"
-              value={stock}
-              onChange={(event) => setStock(event.target.value.toUpperCase())}
-              placeholder="AAPL"
-              required
-              fullWidth
-              slotProps={{
-                htmlInput: { maxLength: 10 },
-              }}
-            />
-          )}
-
-          <FormControlLabel
-            control={
-              <Switch
-                checked={enabled}
-                onChange={(event) => setEnabled(event.target.checked)}
-              />
-            }
-            label={enabled ? 'Enabled' : 'Disabled'}
-          />
+          <EditConfigPanel {...configPanelProps} />
 
           <Stack direction="row" spacing={1.5} justifyContent="flex-end">
             <Button
