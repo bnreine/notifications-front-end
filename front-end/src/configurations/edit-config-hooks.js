@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 const editConfigHooks = ({ run }) => {
   const [configType, setConfigType] = useState('reminder');
   const [message, setMessage] = useState('');
+  const [name, setName] = useState('');
   const [targetAtLocal, setTargetAtLocal] = useState(null);
   const [timezone, setTimezone] = useState('');
   const [enabled, setEnabled] = useState(true);
@@ -22,7 +23,12 @@ const editConfigHooks = ({ run }) => {
 
         run({
           enabled,
-          config: { type: 'countdown', targetAt: utcTimestamp, timezone },
+          config: {
+            type: 'countdown',
+            name,
+            targetAt: utcTimestamp,
+            timezone,
+          },
         });
       }
       return;
@@ -39,6 +45,8 @@ const editConfigHooks = ({ run }) => {
     setTimezone,
     message,
     setMessage,
+    name,
+    setName,
     enabled,
     setEnabled,
     targetAtLocal,

@@ -2,34 +2,41 @@ const Privacy = () => (
   <>
     <h1>Privacy Policy</h1>
 
-    <p>Last Updated: July 23, 2026</p>
+    <p>Last Updated: October 7, 2026</p>
 
     <h2>1. Information We Collect</h2>
 
     <p>
       We collect information you provide when creating an account, logging in,
       and configuring notifications. This may include your email address, phone
-      number, Slack workspace details, reminder text, stock alert settings,
-      delivery channel preferences, and opt-in status for each notification.
+      number, Slack workspace details, reminder text, countdown names, dates,
+      and timezones, delivery channel preferences, and your consent and
+      verification status for SMS and WhatsApp.
     </p>
 
     <h2>2. How We Use Information</h2>
 
     <p>
-      We use your information to operate Notifications, evaluate and deliver
-      reminders and stock alerts once per day at 8:00 AM EST to the channels you
-      select, honor your opt-in and opt-out choices, process{' '}
-      <strong>STOP</strong> requests on delivery channels, provide customer
-      support, and improve the platform.
+      We use your information to operate Notifications, send you your reminders
+      and countdowns (including the number of days remaining until your
+      countdown date) once per day at 8:00 AM EST, honor your consent,
+      verification, and preference choices, process <strong>STOP</strong>{' '}
+      requests on delivery channels, provide customer support, and improve the
+      platform.
     </p>
 
     <h2>3. Opt-In and Opt-Out</h2>
 
     <p>
-      You are opted out of notifications by default. We only send alerts for
-      notifications you have explicitly opted into in the app. You may opt out
-      of a delivery channel at any time by replying <strong>STOP</strong> on
-      that channel or by disabling the notification in the app.
+      You are opted out of notifications by default. We only send a
+      configuration if it is enabled and the channel is turned on for that
+      configuration in your preferences. For SMS and WhatsApp, you consent to
+      receive messages when you add the number, and we only send once it is
+      verified. For Slack, you grant permissions through Slack's authorization
+      flow when you add the channel. You may opt out of a delivery channel at
+      any time by replying <strong>STOP</strong> on that channel, by turning the
+      channel off for a configuration, or by disabling the configuration in the
+      app.
     </p>
 
     <h2>4. Third-Party Services</h2>

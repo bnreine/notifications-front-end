@@ -2,7 +2,7 @@ const Terms = () => (
   <>
     <h1>Terms of Service</h1>
 
-    <p>Last Updated: July 23, 2026</p>
+    <p>Last Updated: October 7, 2026</p>
 
     <h2>1. Acceptance of Terms</h2>
 
@@ -15,15 +15,19 @@ const Terms = () => (
 
     <p>
       Notifications allows logged-in users to create and manage reminders and
-      stock alerts. Reminders are user-defined text messages delivered when
-      their conditions are met. Stock alerts notify you when a publicly traded
-      security moves outside a price range you set.
+      countdowns. Reminders are user-defined text messages. Countdowns are named
+      events with a date, time, and timezone that you choose, and each day you
+      are told how many days remain until the event.
     </p>
 
     <p>
-      You may create as many notifications as you need and choose where each one
-      is delivered, including WhatsApp, SMS, or Slack. Notifications are
-      evaluated once per day at 8:00 AM EST.
+      You may create as many configurations as you need and choose where each
+      one is delivered, including WhatsApp, SMS, or Slack. Each day at 8:00 AM
+      EST, the Service sends you the reminder text, or the number of days
+      remaining until your countdown date, to each channel provided the
+      configuration is enabled and that channel is turned on for that
+      configuration in your preferences. For SMS and WhatsApp, your number must
+      also be consented to and verified.
     </p>
 
     <h2>3. User Accounts</h2>
@@ -36,38 +40,33 @@ const Terms = () => (
     <h2>4. Opt-In and Opt-Out</h2>
 
     <p>
-      You are opted out of notifications by default. You must explicitly opt in
-      to each notification in the app before it will be delivered. You may opt
-      out of a delivery channel at any time by replying <strong>STOP</strong> on
-      that channel, or by disabling the notification in the app.
+      You are opted out of notifications by default. For SMS and WhatsApp, you
+      must explicitly consent to messages when you add the number, and verify it
+      afterward, before messages will be delivered. For Slack, you grant
+      permissions through Slack's authorization flow when you add the channel. A
+      configuration is only sent if it is enabled and the channel is turned on
+      for that configuration. You may opt out of a delivery channel at any time
+      by replying <strong>STOP</strong> on that channel, by turning the channel
+      off for a configuration, or by disabling the configuration in the app.
     </p>
 
     <h2>5. Notification Delivery</h2>
 
     <p>
-      Notifications are evaluated once per day at 8:00 AM EST. The Service
-      attempts to deliver notifications promptly after evaluation but does not
-      guarantee delivery, timing, or availability. Message delivery depends on
-      third-party providers, network availability, and other factors outside our
-      control.
+      Notifications are sent once per day at 8:00 AM EST. The Service attempts
+      to deliver them promptly but does not guarantee delivery, timing, or
+      availability. Message delivery depends on third-party providers, network
+      availability, and other factors outside our control.
     </p>
 
-    <h2>6. Investment Disclaimer</h2>
-
-    <p>
-      Stock alerts are provided for informational purposes only and do not
-      constitute financial, investment, legal, or tax advice. Users are solely
-      responsible for their own investment decisions.
-    </p>
-
-    <h2>7. Availability</h2>
+    <h2>6. Availability</h2>
 
     <p>
       The Service may be modified, interrupted, suspended, or discontinued at
       any time without prior notice.
     </p>
 
-    <h2>8. Acceptable Use</h2>
+    <h2>7. Acceptable Use</h2>
 
     <p>
       You agree not to use the Service for unlawful purposes, abuse the
@@ -75,7 +74,7 @@ const Terms = () => (
       our systems.
     </p>
 
-    <h2>9. Intellectual Property</h2>
+    <h2>8. Intellectual Property</h2>
 
     <p>
       All software, content, trademarks, and intellectual property associated
@@ -83,14 +82,14 @@ const Terms = () => (
       stated.
     </p>
 
-    <h2>10. Disclaimer of Warranties</h2>
+    <h2>9. Disclaimer of Warranties</h2>
 
     <p>
       The Service is provided "AS IS" and "AS AVAILABLE" without warranties of
       any kind, express or implied.
     </p>
 
-    <h2>11. Limitation of Liability</h2>
+    <h2>10. Limitation of Liability</h2>
 
     <p>
       To the maximum extent permitted by law, the Service owner shall not be
@@ -98,14 +97,14 @@ const Terms = () => (
       damages arising from the use or inability to use the Service.
     </p>
 
-    <h2>12. Termination</h2>
+    <h2>11. Termination</h2>
 
     <p>
       We may suspend or terminate access to the Service at any time for
       violations of these Terms or for operational reasons.
     </p>
 
-    <h2>13. Changes to These Terms</h2>
+    <h2>12. Changes to These Terms</h2>
 
     <p>
       We may update these Terms from time to time. Continued use of the Service
@@ -113,7 +112,7 @@ const Terms = () => (
       Terms.
     </p>
 
-    <h2>14. Contact</h2>
+    <h2>13. Contact</h2>
 
     <p>Questions regarding these Terms may be directed to:</p>
 

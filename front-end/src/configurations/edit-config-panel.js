@@ -26,6 +26,8 @@ const EditConfigPanel = ({
   setTimezone,
   message,
   setMessage,
+  name,
+  setName,
   enabled,
   setEnabled,
   targetAtLocal,
@@ -48,7 +50,7 @@ const EditConfigPanel = ({
           <FormControlLabel
             value={'countdown'}
             control={<Radio />}
-            label="Countdown"
+            label="Countdown (days until event)"
           />
         </RadioGroup>
       </FormControl>
@@ -66,6 +68,13 @@ const EditConfigPanel = ({
         />
       ) : (
         <>
+          <TextField
+            label="Name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            required
+            fullWidth
+          />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
               label="Countdown date & time"

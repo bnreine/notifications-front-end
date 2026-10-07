@@ -97,6 +97,7 @@ const EditConfiguration = () => {
   const {
     setConfigType,
     setMessage,
+    setName,
     setEnabled,
     setTargetAtLocal,
     setTimezone,
@@ -120,6 +121,7 @@ const EditConfiguration = () => {
         const pickerValue = dayjs
           .utc(configuration.config.targetAt)
           .tz(configuration.config.timezone);
+        setName(configuration.config.name ?? '');
         setTargetAtLocal(pickerValue);
         setTimezone(configuration.config.timezone);
       }
