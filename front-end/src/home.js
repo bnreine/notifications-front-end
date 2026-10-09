@@ -1,6 +1,6 @@
 import { cardStyle } from './styles';
-import addConsentImg from '../assets/icons/add-consent-3.png';
-import addDontConsentImg from '../assets/icons/add-dont-consent-2.png';
+import addConsentImg from '../assets/icons/opt-in-checked.png';
+import addDontConsentImg from '../assets/icons/opt-in-unchecked.png';
 import { Box, Stack } from '@mui/material';
 
 const Home = () => (
