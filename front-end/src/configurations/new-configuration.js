@@ -80,7 +80,7 @@ const NewConfiguration = () => {
             New configuration
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
-            Create a reminder or countdown.
+            Create a reminder, countdown, or stock quote alert.
           </Typography>
         </Box>
       </Stack>

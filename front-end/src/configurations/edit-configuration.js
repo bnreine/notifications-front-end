@@ -98,6 +98,7 @@ const EditConfiguration = () => {
     setConfigType,
     setMessage,
     setName,
+    setStock,
     setEnabled,
     setTargetAtLocal,
     setTimezone,
@@ -117,6 +118,8 @@ const EditConfiguration = () => {
 
       if (type === 'reminder') {
         setMessage(configuration.config?.message ?? '');
+      } else if (type === 'stockQuoteAlert') {
+        setStock(configuration.config?.stock ?? '');
       } else {
         const pickerValue = dayjs
           .utc(configuration.config.targetAt)
@@ -161,7 +164,7 @@ const EditConfiguration = () => {
               Edit configuration
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
-              Update this reminder or countdown.
+              Update this reminder, countdown, or stock quote alert.
             </Typography>
           </Box>
         </Stack>

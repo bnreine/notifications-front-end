@@ -2,7 +2,7 @@ const Privacy = () => (
   <>
     <h1>Privacy Policy</h1>
 
-    <p>Last Updated: October 7, 2026</p>
+    <p>Last Updated: October 14, 2026</p>
 
     <h2>1. Information We Collect</h2>
 
@@ -10,19 +10,19 @@ const Privacy = () => (
       We collect information you provide when creating an account, logging in,
       and configuring notifications. This may include your email address, phone
       number, Slack workspace details, reminder text, countdown names, dates,
-      and timezones, delivery channel preferences, and your consent and
-      verification status for SMS and WhatsApp.
+      and timezones, stock ticker symbols, delivery channel preferences, and
+      your consent and verification status for SMS and WhatsApp.
     </p>
 
     <h2>2. How We Use Information</h2>
 
     <p>
-      We use your information to operate Notifications, send you your reminders
-      and countdowns (including the number of days remaining until your
-      countdown date) once per day at 8:00 AM EST, honor your consent,
-      verification, and preference choices, process <strong>STOP</strong>{' '}
-      requests on delivery channels, provide customer support, and improve the
-      platform.
+      We use your information to operate Notifications, send you your reminders,
+      countdowns (including the number of days remaining until your countdown
+      date), and stock quote alerts (including the current price of the stock
+      you chose) once per day at 8:00 AM EST, honor your consent, verification,
+      and preference choices, process <strong>STOP</strong> requests on delivery
+      channels, provide customer support, and improve the platform.
     </p>
 
     <h2>3. Opt-In and Opt-Out</h2>
@@ -43,7 +43,9 @@ const Privacy = () => (
 
     <p>
       Notification delivery relies on third-party providers such as SMS
-      gateways, WhatsApp, and Slack. These providers process data according to
+      gateways, WhatsApp, and Slack. Stock quote alerts also use a third-party
+      market data provider, which receives the ticker symbol you enter in order
+      to look up its current price. These providers process data according to
       their own privacy policies.
     </p>
 

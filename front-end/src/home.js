@@ -8,7 +8,8 @@ const Home = () => (
     <h1>Notifications</h1>
 
     <p style={{ color: '#6c757d', marginBottom: '2rem' }}>
-      Set up reminders and countdowns, then choose where each one is delivered.
+      Set up reminders, countdowns, and stock quote alerts, then choose where
+      each one is delivered.
     </p>
 
     <div style={cardStyle}>
@@ -16,7 +17,7 @@ const Home = () => (
 
       <p>
         Notifications is a platform for configuring and delivering alerts
-        through the channels you already use. You can create two types of
+        through the channels you already use. You can create three types of
         configurations:
       </p>
 
@@ -31,15 +32,21 @@ const Home = () => (
           America/New_York. Each day, we tell you how many days are left until
           that date.
         </li>
+        <li>
+          <strong>Stock quote alerts</strong>: the current price of a stock you
+          choose by ticker symbol, such as "The price of AAPL is $440." Each
+          day, we send you the latest quote.
+        </li>
       </ul>
 
       <p>
         Each configuration can be sent to WhatsApp, SMS, or Slack. Every day at
-        8:00 AM EST, we send you the reminder text, or the number of days left
-        until your countdown date, to each channel, as long as the configuration
-        is enabled and that channel is turned on for that configuration. For SMS
-        and WhatsApp, your number must also be consented and verified. You are
-        opted out by default and choose which channels to enable in the app.
+        8:00 AM EST, we send you the reminder text, the number of days left
+        until your countdown date, or the current price of your stock, to each
+        channel, as long as the configuration is enabled and that channel is
+        turned on for that configuration. For SMS and WhatsApp, your number must
+        also be consented and verified. You are opted out by default and choose
+        which channels to enable in the app.
       </p>
     </div>
 
@@ -64,18 +71,19 @@ const Home = () => (
       <h3>Configurations</h3>
       <ol>
         <li>
-          Add as many reminders or countdowns as you need. Enter the reminder
-          message, or the countdown name, date and time, and timezone.
+          Add as many reminders, countdowns, or stock quote alerts as you need.
+          Enter the reminder message, the countdown name, date and time, and
+          timezone, or the stock ticker symbol.
         </li>
         <li>
           Enable the configuration and turn on the channels (WhatsApp, SMS,
           Slack) you want it sent to.
         </li>
         <li>
-          Every day at 8:00 AM EST, your reminder or countdown is sent to each
-          channel if the configuration is enabled and that channel is turned on
-          for that configuration. For SMS and WhatsApp, the destination must
-          also be consented and verified.
+          Every day at 8:00 AM EST, your reminder, countdown, or stock quote
+          alert is sent to each channel if the configuration is enabled and that
+          channel is turned on for that configuration. For SMS and WhatsApp, the
+          destination must also be consented and verified.
         </li>
       </ol>
     </div>

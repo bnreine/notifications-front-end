@@ -28,6 +28,8 @@ const EditConfigPanel = ({
   setMessage,
   name,
   setName,
+  stock,
+  setStock,
   enabled,
   setEnabled,
   targetAtLocal,
@@ -52,10 +54,15 @@ const EditConfigPanel = ({
             control={<Radio />}
             label="Countdown (days until event)"
           />
+          <FormControlLabel
+            value={'stockQuoteAlert'}
+            control={<Radio />}
+            label="Stock quote alert"
+          />
         </RadioGroup>
       </FormControl>
 
-      {configType === 'reminder' ? (
+      {configType === 'reminder' && (
         <TextField
           label="Message"
           value={message}
@@ -66,7 +73,23 @@ const EditConfigPanel = ({
           multiline
           minRows={2}
         />
-      ) : (
+      )}
+
+      {configType === 'stockQuoteAlert' && (
+        <TextField
+          label="Stock"
+          value={stock}
+          onChange={(event) => setStock(event.target.value.toUpperCase())}
+          placeholder="AAPL"
+          required
+          fullWidth
+          slotProps={{
+            htmlInput: { maxLength: 10 },
+          }}
+        />
+      )}
+
+      {configType === 'countdown' && (
         <>
           <TextField
             label="Name"

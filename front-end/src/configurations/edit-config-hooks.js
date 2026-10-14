@@ -5,12 +5,18 @@ const editConfigHooks = ({ run }) => {
   const [configType, setConfigType] = useState('reminder');
   const [message, setMessage] = useState('');
   const [name, setName] = useState('');
+  const [stock, setStock] = useState('');
   const [targetAtLocal, setTargetAtLocal] = useState(null);
   const [timezone, setTimezone] = useState('');
   const [enabled, setEnabled] = useState(true);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (configType === 'stockQuoteAlert') {
+      run({ enabled, config: { type: 'stockQuoteAlert', stock } });
+      return;
+    }
 
     if (configType === 'countdown') {
       if (targetAtLocal && timezone) {
@@ -47,6 +53,8 @@ const editConfigHooks = ({ run }) => {
     setMessage,
     name,
     setName,
+    stock,
+    setStock,
     enabled,
     setEnabled,
     targetAtLocal,

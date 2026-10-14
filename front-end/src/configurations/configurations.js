@@ -303,7 +303,8 @@ const Configurations = () => {
             Configurations
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
-            Manage your reminder and stock alert configurations.
+            Manage your reminder, countdown, and stock quote alert
+            configurations.
           </Typography>
         </Box>
 
