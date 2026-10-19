@@ -45,7 +45,8 @@ const Home = () => (
         until your countdown date, or the current price of your stock, to each
         channel, as long as the configuration is enabled and that channel is
         turned on for that configuration. For SMS and WhatsApp, your number must
-        also be consented and verified. You are opted out by default and choose
+        also be consented and verified. SMS is currently only available for
+        Brazilian phone numbers (+55). You are opted out by default and choose
         which channels to enable in the app.
       </p>
     </div>
@@ -65,6 +66,7 @@ const Home = () => (
         <li>
           <strong>SMS / WhatsApp</strong>: enter your number and consent to
           receive messages while adding it, then verify the number afterward.
+          SMS currently supports Brazilian phone numbers (+55) only.
         </li>
       </ol>
 
@@ -83,7 +85,8 @@ const Home = () => (
           Every day at 8:00 AM EST, your reminder, countdown, or stock quote
           alert is sent to each channel if the configuration is enabled and that
           channel is turned on for that configuration. For SMS and WhatsApp, the
-          destination must also be consented and verified.
+          destination must also be consented and verified. SMS is currently only
+          available for Brazilian phone numbers (+55).
         </li>
       </ol>
     </div>

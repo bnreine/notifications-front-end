@@ -32,9 +32,10 @@ const Privacy = () => (
       configuration if it is enabled and the channel is turned on for that
       configuration in your preferences. For SMS and WhatsApp, you consent to
       receive messages when you add the number, and we only send once it is
-      verified. For Slack, you grant permissions through Slack's authorization
-      flow when you add the channel. You may opt out of a delivery channel at
-      any time by replying <strong>STOP</strong> on that channel, by turning the
+      verified. SMS is currently only available for Brazilian phone numbers
+      (+55). For Slack, you grant permissions through Slack's authorization flow
+      when you add the channel. You may opt out of a delivery channel at any
+      time by replying <strong>STOP</strong> on that channel, by turning the
       channel off for a configuration, or by disabling the configuration in the
       app.
     </p>

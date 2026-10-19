@@ -24,6 +24,18 @@ const SMS_CONSENT = (
   </>
 );
 
+const SMS_NOTICE =
+  'SMS is currently only available for Brazilian phone numbers (+55).';
+
+// +55, 2-digit area code, then an 8 or 9 digit number
+const SMS_PHONE_NUMBER_RULE = {
+  pattern: /^\+55[1-9]\d{9,10}$/,
+  example: '+5511987654321',
+  helperText: 'Brazilian numbers only, e.g. +5511987654321',
+  errorMessage:
+    'SMS only supports Brazilian numbers. Enter a number like +5511987654321',
+};
+
 const SmsAddMenuItem = forwardRef((props, ref) => (
   <PhoneDestinationAddMenuItem
     {...props}
@@ -34,6 +46,8 @@ const SmsAddMenuItem = forwardRef((props, ref) => (
     title="Add SMS destination"
     verifyPhoneTitle="Verify SMS number"
     consent={SMS_CONSENT}
+    notice={SMS_NOTICE}
+    phoneNumberRule={SMS_PHONE_NUMBER_RULE}
   />
 ));
 

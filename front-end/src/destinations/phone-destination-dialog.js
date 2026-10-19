@@ -14,6 +14,8 @@ const PhoneDestinationDialog = ({
   addPhonePageTitle,
   verifyPhoneTitle,
   consent,
+  notice,
+  phoneNumberRule,
   onClose,
   onCreated,
 }) => {
@@ -48,6 +50,8 @@ const PhoneDestinationDialog = ({
     onClose: handleClose,
     onCreated,
     consent,
+    notice,
+    phoneNumberRule,
     channelType,
     setPage,
     consented,

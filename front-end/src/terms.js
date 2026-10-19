@@ -29,7 +29,8 @@ const Terms = () => (
       until your countdown date, or the current price of your selected stock, to
       each channel provided the configuration is enabled and that channel is
       turned on for that configuration in your preferences. For SMS and
-      WhatsApp, your number must also be consented to and verified.
+      WhatsApp, your number must also be consented to and verified. SMS is
+      currently only available for Brazilian phone numbers (+55).
     </p>
 
     <h2>3. User Accounts</h2>
@@ -44,7 +45,8 @@ const Terms = () => (
     <p>
       You are opted out of notifications by default. For SMS and WhatsApp, you
       must explicitly consent to messages when you add the number, and verify it
-      afterward, before messages will be delivered. For Slack, you grant
+      afterward, before messages will be delivered. SMS is currently only
+      available for Brazilian phone numbers (+55). For Slack, you grant
       permissions through Slack's authorization flow when you add the channel. A
       configuration is only sent if it is enabled and the channel is turned on
       for that configuration. You may opt out of a delivery channel at any time

@@ -11,6 +11,8 @@ const PhoneDestinationAddMenuItem = forwardRef(
       title,
       verifyPhoneTitle,
       consent,
+      notice,
+      phoneNumberRule,
       accessToken,
       onCreated,
       onCloseMenu,
@@ -41,6 +43,8 @@ const PhoneDestinationAddMenuItem = forwardRef(
           addPhonePageTitle={title}
           verifyPhoneTitle={verifyPhoneTitle}
           consent={consent}
+          notice={notice}
+          phoneNumberRule={phoneNumberRule}
           onClose={() => setDialogOpen(false)}
           onCreated={onCreated}
         />

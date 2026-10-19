@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Checkbox,
   CircularProgress,
@@ -47,6 +48,8 @@ const PhoneNumberAndConsentDialog = ({
   onClose,
   onCreated,
   consent,
+  notice,
+  phoneNumberRule,
   channelType,
   setPage,
   consented,
@@ -82,6 +85,11 @@ const PhoneNumberAndConsentDialog = ({
       return;
     }
 
+    if (phoneNumberRule && !phoneNumberRule.pattern.test(phoneNumber)) {
+      setPhoneError(phoneNumberRule.errorMessage);
+      return;
+    }
+
     if (!PHONE_NUMBER_PATTERN.test(phoneNumber)) {
       setPhoneError(
         'Enter a phone number in valid international format eg. +55555555555(5)'
@@ -109,6 +117,7 @@ const PhoneNumberAndConsentDialog = ({
       <DialogTitle>{addPhonePageTitle}</DialogTitle>
       <DialogContent>
         <Stack spacing={2} sx={{ mt: 1 }}>
+          {notice && <Alert severity="info">{notice}</Alert>}
           <TextField
             label="Phone number"
             value={phoneNumber}
@@ -118,9 +127,11 @@ const PhoneNumberAndConsentDialog = ({
                 setPhoneError('');
               }
             }}
-            placeholder="+55555555555(5)"
+            placeholder={phoneNumberRule?.example ?? '+55555555555(5)'}
             helperText={
-              phoneError || 'Use international format, e.g. +55555555555(5)'
+              phoneError ||
+              (phoneNumberRule?.helperText ??
+                'Use international format, e.g. +55555555555(5)')
             }
             error={Boolean(phoneError)}
             required
