@@ -20,7 +20,7 @@ const Privacy = () => (
       We use your information to operate Notifications, send you your reminders,
       countdowns (including the number of days remaining until your countdown
       date), and stock quote alerts (including the current price of the stock
-      you chose) once per day at 8:00 AM EST, honor your consent, verification,
+      you chose) once per day at 3:00 PM EST, honor your consent, verification,
       and preference choices, process <strong>STOP</strong> requests on delivery
       channels, provide customer support, and improve the platform.
     </p>

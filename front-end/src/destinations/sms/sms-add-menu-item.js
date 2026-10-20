@@ -10,7 +10,7 @@ const SmsIcon = () => <IconComponent iconSvg={smsSvg} alt={'sms'} />;
 const SMS_CONSENT = (
   <>
     I consent to Notifications using this phone number to send me SMS messages
-    about my reminders and countdowns at approximately 8:00 AM Eastern Time.
+    about my reminders and countdowns at approximately 3:00 PM Eastern Time.
     Message frequency varies based on my notification settings. Message and data
     rates may apply. Reply STOP to unsubscribe or HELP for help. See our{' '}
     <Link component={RouterLink} to="/privacy" target="_blank">

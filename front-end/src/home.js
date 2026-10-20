@@ -41,7 +41,7 @@ const Home = () => (
 
       <p>
         Each configuration can be sent to WhatsApp, SMS, or Slack. Every day at
-        8:00 AM EST, we send you the reminder text, the number of days left
+        3:00 PM EST, we send you the reminder text, the number of days left
         until your countdown date, or the current price of your stock, to each
         channel, as long as the configuration is enabled and that channel is
         turned on for that configuration. For SMS and WhatsApp, your number must
@@ -82,7 +82,7 @@ const Home = () => (
           Slack) you want it sent to.
         </li>
         <li>
-          Every day at 8:00 AM EST, your reminder, countdown, or stock quote
+          Every day at 3:00 PM EST, your reminder, countdown, or stock quote
           alert is sent to each channel if the configuration is enabled and that
           channel is turned on for that configuration. For SMS and WhatsApp, the
           destination must also be consented and verified. SMS is currently only

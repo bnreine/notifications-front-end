@@ -24,7 +24,7 @@ const Terms = () => (
 
     <p>
       You may create as many configurations as you need and choose where each
-      one is delivered, including WhatsApp, SMS, or Slack. Each day at 8:00 AM
+      one is delivered, including WhatsApp, SMS, or Slack. Each day at 3:00 PM
       EST, the Service sends you the reminder text, the number of days remaining
       until your countdown date, or the current price of your selected stock, to
       each channel provided the configuration is enabled and that channel is
@@ -57,7 +57,7 @@ const Terms = () => (
     <h2>5. Notification Delivery</h2>
 
     <p>
-      Notifications are sent once per day at 8:00 AM EST. The Service attempts
+      Notifications are sent once per day at 3:00 PM EST. The Service attempts
       to deliver them promptly but does not guarantee delivery, timing, or
       availability. Message delivery depends on third-party providers, network
       availability, and other factors outside our control.
